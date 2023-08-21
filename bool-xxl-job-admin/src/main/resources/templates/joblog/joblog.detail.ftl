@@ -1,1 +1,1 @@
-return "joblog/joblog.detail";
+aaaaakldfjadlkfjasf

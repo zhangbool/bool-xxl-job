@@ -80,7 +80,8 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public ResultModel logout(HttpServletRequest request, HttpServletResponse response) {
-        return null;
+        CookieUtil.remove(request, response, LOGIN_IDENTITY_KEY);
+        return ResultModel.SUCCESS;
     }
 
 
@@ -120,6 +121,7 @@ public class LoginServiceImpl implements LoginService {
                 log.info("----------------------------验证用户密码-------------------------------");
                 if (dbUser != null) {
                     if (cookieUser.getPassword().equals(dbUser.getPassword())) {
+                        log.info("----------------------------用户密码验证通过-------------------------------");
                         return dbUser;
                     }
                 }

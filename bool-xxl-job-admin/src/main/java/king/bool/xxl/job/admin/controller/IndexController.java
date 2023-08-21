@@ -73,4 +73,16 @@ public class IndexController {
         return loginService.login(request, response, userName, password, ifRem);
     }
 
+    @RequestMapping(value="logout", method=RequestMethod.POST)
+    @ResponseBody
+    @PermissionLimit(needLogin = false)
+    public ResultModel logout(HttpServletRequest request, HttpServletResponse response){
+        return loginService.logout(request, response);
+    }
+
+    @RequestMapping("/help")
+    public String help() {
+        return "help/help";
+    }
+
 }

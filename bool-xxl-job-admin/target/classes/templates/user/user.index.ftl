@@ -13,17 +13,17 @@
 	<@netCommon.commonHeader />
 	<!-- left -->
 	<@netCommon.commonLeft "user" />
-	
+
 	<!-- Content Wrapper. Contains page content -->
 	<div class="content-wrapper">
 		<!-- Content Header (Page header) -->
 		<section class="content-header">
 			<h1>${I18n.user_manage}</h1>
 		</section>
-		
+
 		<!-- Main content -->
 	    <section class="content">
-	    
+
 	    	<div class="row">
                 <div class="col-xs-3">
                     <div class="input-group">
@@ -48,7 +48,7 @@
 	            	<button class="btn btn-block btn-success add" type="button">${I18n.user_add}</button>
 	            </div>
           	</div>
-	    	
+
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="box">
@@ -73,7 +73,7 @@
 			</div>
 	    </section>
 	</div>
-	
+
 	<!-- footer -->
 	<@netCommon.commonFooter />
 </div>
@@ -103,6 +103,8 @@
                             <input type="radio" name="role" value="1" />${I18n.user_role_admin}
                         </div>
                     </div>
+
+					<#-- todo: 这里是干啥的, groupList是后台返回的数据模型 -->
                     <div class="form-group">
                         <label for="lastname" class="col-sm-2 control-label">${I18n.user_permission}<font color="black">*</font></label>
                         <div class="col-sm-10">
@@ -180,6 +182,7 @@
 </div>
 
 <@netCommon.commonScript />
+
 <!-- DataTables -->
 <script src="${request.contextPath}/static/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 <script src="${request.contextPath}/static/adminlte/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js"></script>

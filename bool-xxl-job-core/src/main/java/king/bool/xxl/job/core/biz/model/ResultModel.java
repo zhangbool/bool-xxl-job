@@ -38,4 +38,22 @@ public class ResultModel {
         return this;
     }
 
+    public static final ResultModel SUCCESS = new ResultModel(SUCCESS_CODE, null);
+
+    public ResultModel() {
+    }
+
+    public ResultModel(int code, Object data) {
+        this.code = SUCCESS_CODE;
+        if (code == 200) {
+            this.status = "ok";
+            this.msg = "success";
+        } else {
+            this.status = "error";
+            this.msg = "error";
+        }
+        this.data = data;
+    }
+
+
 }

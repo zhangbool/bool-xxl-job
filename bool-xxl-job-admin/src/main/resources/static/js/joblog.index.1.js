@@ -10,6 +10,9 @@ $(function() {
 			data : {"jobGroup":jobGroup},
 			dataType : "json",
 			success : function(data){
+
+				console.log("getJobsByGroup结果是:" + JSON.stringify(data));
+
 				if (data.code == 200) {
 					$("#jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
 					$.each(data.content, function (n, value) {
@@ -72,7 +75,7 @@ $(function() {
 	// init date tables
 	var logTable = $("#joblog_list").dataTable({
 		"deferRender": true,
-		"processing" : true, 
+		"processing" : true,
 	    "serverSide": true,
 		"ajax": {
 	        url: base_url + "/joblog/pageList" ,
@@ -141,7 +144,7 @@ $(function() {
 							return data?'<a class="logTips" href="javascript:;" >'+ I18n.system_show +'<span style="display:none;">'+ data +'</span></a>':I18n.system_empty;
 						}
 					},
-	                { 
+	                {
 	                	"data": 'handleTime',
                         "width":'20%',
 	                	"render": function ( data, type, row ) {
@@ -165,7 +168,7 @@ $(function() {
                             return html;
 						}
 	                },
-	                { 
+	                {
 	                	"data": 'handleMsg',
                         "width":'10%',
 	                	"render": function ( data, type, row ) {
@@ -207,7 +210,7 @@ $(function() {
 
 		                			return html;
 		                		}
-		                		return null;	
+		                		return null;
 	                		}
 	                	}
 	                }
@@ -242,22 +245,22 @@ $(function() {
             layer.msg( json.msg || I18n.system_api_error );
         }
     });
-	
+
 	// logTips alert
 	$('#joblog_list').on('click', '.logTips', function(){
 		var msg = $(this).find('span').html();
 		ComAlertTec.show(msg);
 	});
-	
+
 	// search Btn
 	$('#searchBtn').on('click', function(){
 		logTable.fnDraw();
 	});
-	
+
 	// logDetail look
 	$('#joblog_list').on('click', '.logDetail', function(){
 		var _id = $(this).attr('_id');
-		
+
 		window.open(base_url + '/joblog/logDetailPage?id=' + _id);
 		return;
 	});

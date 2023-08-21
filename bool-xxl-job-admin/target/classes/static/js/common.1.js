@@ -10,7 +10,7 @@ $(function(){
 			layer.close(index);
 
 			$.post(base_url + "/logout", function(data, status) {
-				if (data.code == "200") {
+				if (data.code === 200) {
                     layer.msg( I18n.logout_success );
                     setTimeout(function(){
                         window.location.href = base_url + "/";
@@ -152,5 +152,5 @@ $(function(){
         updatePwdModalValidate.resetForm();
         $("#updatePwdModal .form .form-group").removeClass("has-error");
     });
-	
+
 });

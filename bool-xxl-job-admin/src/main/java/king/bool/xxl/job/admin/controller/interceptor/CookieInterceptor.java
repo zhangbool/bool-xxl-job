@@ -27,6 +27,7 @@ public class CookieInterceptor implements AsyncHandlerInterceptor {
                            Object handler,
                            ModelAndView modelAndView) throws Exception {
         // cookie
+        // 设置页面是否
         if (modelAndView!=null && request.getCookies()!=null && request.getCookies().length>0) {
             HashMap<String, Cookie> cookieMap = new HashMap<String, Cookie>();
             for (Cookie ck : request.getCookies()) {

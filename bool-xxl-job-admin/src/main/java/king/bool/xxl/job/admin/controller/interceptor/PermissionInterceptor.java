@@ -61,6 +61,8 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
             if (needAdminUser && loginUser.getRole()!=1) {
                 throw new RuntimeException(I18nUtil.getString("system_permission_limit"));
             }
+
+            // 每次验证后, 都会把数据写入到请求中
             request.setAttribute(LoginService.LOGIN_IDENTITY_KEY, loginUser);
         }
 
