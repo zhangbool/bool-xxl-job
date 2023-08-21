@@ -39,6 +39,7 @@ public class ResultModel {
     }
 
     public static final ResultModel SUCCESS = new ResultModel(SUCCESS_CODE, null);
+    public static final ResultModel FAIL = new ResultModel(FAIL_CODE, null);
 
     public ResultModel() {
     }
