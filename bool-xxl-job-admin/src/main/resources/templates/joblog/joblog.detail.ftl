@@ -1,0 +1,1 @@
+return "joblog/joblog.detail";
