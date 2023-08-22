@@ -20,21 +20,21 @@ public class ResultModel {
     //存放状态信息，如果失败，就是失败信息
     private String msg;
     //这里是返回的结果
-    private Object data;
+    private Object content;
 
     //如果出错 那么状态和数据直接设置为error和null，消息可自定义
     public ResultModel setErrorResult(String msg) {
         this.code = FAIL_CODE;
         this.status = "error";
         this.msg = msg;
-        this.data = null;
+        this.content = null;
         return this;
     }
     public ResultModel setOKResult(Object data) {
         this.code = SUCCESS_CODE;
         this.status = "ok";
         this.msg = "success";
-        this.data = data;
+        this.content = data;
         return this;
     }
 
@@ -53,7 +53,7 @@ public class ResultModel {
             this.status = "error";
             this.msg = "error";
         }
-        this.data = data;
+        this.content = data;
     }
 
 

@@ -1,6 +1,7 @@
 $(function() {
 
 	// init date tables
+	// 这里有问题
 	var jobTable = $("#job_list").dataTable({
 		"deferRender": true,
 		"processing" : true,
@@ -9,6 +10,9 @@ $(function() {
 			url: base_url + "/jobinfo/pageList",
 			type:"post",
 	        data : function ( d ) {
+
+				console.log("---------------------" + JSON.stringify($('#jobGroup')));
+
 	        	var obj = {};
 	        	obj.jobGroup = $('#jobGroup').val();
                 obj.triggerStatus = $('#triggerStatus').val();
@@ -580,6 +584,7 @@ $(function() {
 		// show
 		$('#updateModal').modal({backdrop: false, keyboard: false}).modal('show');
 	});
+
 	var updateModalValidate = $("#updateModal .form").validate({
 		errorElement : 'span',
         errorClass : 'help-block',
@@ -664,6 +669,7 @@ $(function() {
     		});
 		}
 	});
+
 	$("#updateModal").on('hide.bs.modal', function () {
         updateModalValidate.resetForm();
         $("#updateModal .form")[0].reset();

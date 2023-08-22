@@ -1,9 +1,10 @@
-package king.bool.xxl.job.admin.controller.interceptor;
+package king.bool.xxl.job.admin.interceptor;
 
 import king.bool.xxl.job.admin.controller.annotation.PermissionLimit;
 import king.bool.xxl.job.admin.core.model.XxlJobUser;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
 import king.bool.xxl.job.admin.service.LoginService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  * @desc : 权限拦截
  **/
 // todo: AsyncHandlerInterceptor这个原理是啥
+@Slf4j
 @Component
 public class PermissionInterceptor implements AsyncHandlerInterceptor {
 
@@ -26,6 +28,8 @@ public class PermissionInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        log.info("请求的url是: " + request.getRequestURL());
 
         // return false;
         // 这里只拦截方法

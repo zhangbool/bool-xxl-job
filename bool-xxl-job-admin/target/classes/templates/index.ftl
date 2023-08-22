@@ -7,14 +7,10 @@
     <link rel="stylesheet" href="${request.contextPath}/static/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css">
     <title>${I18n.admin_name}</title>
 </head>
-
-<body class="hold-transition skin-blue sidebar-mini
-    <#if cookieMap?exists && cookieMap["xxljob_adminlte_settings"]?exists && "off" == cookieMap["xxljob_adminlte_settings"].value > sidebar-collapse</#if> ">
+<body class="hold-transition skin-blue sidebar-mini <#if cookieMap?exists && cookieMap["xxljob_adminlte_settings"]?exists && "off" == cookieMap["xxljob_adminlte_settings"].value >sidebar-collapse</#if> ">
 <div class="wrapper">
-
     <!-- header -->
     <@netCommon.commonHeader />
-
     <!-- left -->
     <@netCommon.commonLeft "index" />
 
@@ -45,7 +41,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">${I18n.job_dashboard_job_num}</span>
-<#--                            <span class="info-box-number">${jobInfoCount}</span>-->
+                            <span class="info-box-number">${jobInfoCount}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
@@ -62,7 +58,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">${I18n.job_dashboard_trigger_num}</span>
-<#--                            <span class="info-box-number">${jobLogCount}</span>-->
+                            <span class="info-box-number">${jobLogCount}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%" ></div>
@@ -84,7 +80,7 @@
 
                         <div class="info-box-content">
                             <span class="info-box-text">${I18n.job_dashboard_jobgroup_num}</span>
-<#--                            <span class="info-box-number">${executorCount}</span>-->
+                            <span class="info-box-number">${executorCount}</span>
 
                             <div class="progress">
                                 <div class="progress-bar" style="width: 100%"></div>
@@ -148,5 +144,4 @@
 <script src="${request.contextPath}/static/plugins/echarts/echarts.common.min.js"></script>
 <script src="${request.contextPath}/static/js/index.js"></script>
 </body>
-
 </html>

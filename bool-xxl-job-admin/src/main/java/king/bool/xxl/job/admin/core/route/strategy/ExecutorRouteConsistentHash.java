@@ -19,6 +19,9 @@ import java.util.TreeMap;
  * @author : 不二
  * @date : 2023/8/22-09:29
  * @desc :  #todo: 一致性hash算法暂时还未搞懂,我们这里先使用简单hash先实现一下
+ *                后续学习参考文档: https://www.xuxueli.com/blog/?blog=./notebook/6-%E7%AE%97%E6%B3%95/%E4%B8%80%E8%87%B4%E6%80%A7Hash%E7%AE%97%E6%B3%95.md
+ *                               https://zhuanlan.zhihu.com/p/439268771
+ *
  *
  *          一致性hash策略:
  *          分组下机器地址相同，不同JOB均匀散列在不同机器上，保证分组下机器分配JOB平均；且每个JOB固定调度其中一台机器；

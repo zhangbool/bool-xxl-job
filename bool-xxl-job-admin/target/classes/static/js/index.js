@@ -36,8 +36,10 @@ $(function () {
         startDate: rangesConf[I18n.daterangepicker_ranges_recent_week][0] ,
         endDate: rangesConf[I18n.daterangepicker_ranges_recent_week][1]
     }, function (start, end, label) {
+        console.log("开始时间是:" + JSON.stringify(start) + ", 结束时间是: " + JSON.stringify(end))
         freshChartDate(start, end);
     });
+
     freshChartDate(rangesConf[I18n.daterangepicker_ranges_recent_week][0], rangesConf[I18n.daterangepicker_ranges_recent_week][1]);
 
     /**
@@ -47,6 +49,9 @@ $(function () {
      * @param endDate
      */
     function freshChartDate(startDate, endDate) {
+        console.log("方法内部: -------开始时间是:" + JSON.stringify(startDate) + ", 结束时间是: " + JSON.stringify(endDate))
+        console.log("方法内部: -------开始时间是:" + JSON.stringify(startDate.format('YYYY-MM-DD HH:mm:ss')) + ", 结束时间是: " + JSON.stringify(endDate.format('YYYY-MM-DD HH:mm:ss')))
+
         $.ajax({
             type : 'POST',
             url : base_url + '/chartInfo',

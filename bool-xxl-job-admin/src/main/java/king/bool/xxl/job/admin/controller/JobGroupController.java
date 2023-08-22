@@ -39,7 +39,6 @@ public class JobGroupController {
     @Resource
     private XxlJobRegistryDao xxlJobRegistryDao;
 
-
     @RequestMapping
     @PermissionLimit(needAdminUser = true)
     public String index(Model model) {

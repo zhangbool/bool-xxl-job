@@ -2,6 +2,7 @@ package king.bool.xxl.job.admin.service.imp;
 
 import king.bool.xxl.job.admin.core.model.XxlJobGroup;
 import king.bool.xxl.job.admin.core.model.XxlJobInfo;
+import king.bool.xxl.job.admin.core.model.XxlJobLogReport;
 import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
@@ -9,6 +10,7 @@ import king.bool.xxl.job.admin.core.util.I18nUtil;
 import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
 import king.bool.xxl.job.admin.dao.XxlJobInfoDao;
 import king.bool.xxl.job.admin.dao.XxlJobLogDao;
+import king.bool.xxl.job.admin.dao.XxlJobLogReportDao;
 import king.bool.xxl.job.admin.service.XxlJobService;
 import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
@@ -38,8 +40,8 @@ public class XxlJobServiceImpl implements XxlJobService {
     public XxlJobLogDao xxlJobLogDao;
 //    @Resource
 //    private XxlJobLogGlueDao xxlJobLogGlueDao;
-//    @Resource
-//    private XxlJobLogReportDao xxlJobLogReportDao;
+    @Resource
+    private XxlJobLogReportDao xxlJobLogReportDao;
 
     @Override
     public Map<String, Object> pageList(int start, int length, int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
@@ -350,9 +352,7 @@ public class XxlJobServiceImpl implements XxlJobService {
     @Override
     public Map<String, Object> dashboardInfo() {
 
-        return null;
-
-        /*int jobInfoCount = xxlJobInfoDao.findAllCount();
+        int jobInfoCount = xxlJobInfoDao.findAllCount();
         int jobLogCount = 0;
         int jobLogSuccessCount = 0;
         XxlJobLogReport xxlJobLogReport = xxlJobLogReportDao.queryLogReportTotal();
@@ -380,15 +380,13 @@ public class XxlJobServiceImpl implements XxlJobService {
         dashboardMap.put("jobLogCount", jobLogCount);
         dashboardMap.put("jobLogSuccessCount", jobLogSuccessCount);
         dashboardMap.put("executorCount", executorCount);
-        return dashboardMap;*/
+        return dashboardMap;
     }
 
     @Override
     public ResultModel chartInfo(Date startDate, Date endDate) {
 
-        return null;
-
-        /*// process
+        // process
         List<String> triggerDayList = new ArrayList<String>();
         List<Integer> triggerDayCountRunningList = new ArrayList<Integer>();
         List<Integer> triggerDayCountSucList = new ArrayList<Integer>();
@@ -434,7 +432,7 @@ public class XxlJobServiceImpl implements XxlJobService {
         result.put("triggerCountSucTotal", triggerCountSucTotal);
         result.put("triggerCountFailTotal", triggerCountFailTotal);
 
-        return new ResultModel(ResultModel.SUCCESS_CODE, result);*/
+        return new ResultModel(ResultModel.SUCCESS_CODE, result);
     }
 
 }

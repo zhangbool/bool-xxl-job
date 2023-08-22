@@ -33,14 +33,6 @@
 
     <dependencies>
 
-        <!-- 实现热加载 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <!-- optional等于true，表示该依赖是可选的，不会被依赖传递 -->
-            <optional>true</optional>
-        </dependency>
-
         <!-- starter-web：spring-webmvc + autoconfigure + logback + yaml + tomcat -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -93,6 +85,11 @@
             <artifactId>lombok</artifactId>
             <version>${lombok.verson}</version>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
         </dependency>
 
         <!-- xxl-job-core -->

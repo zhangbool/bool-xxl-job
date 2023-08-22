@@ -1,4 +1,4 @@
-package king.bool.xxl.job.admin.controller.interceptor;
+package king.bool.xxl.job.admin.interceptor;
 import king.bool.xxl.job.admin.core.util.FtlUtil;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
 import lombok.extern.slf4j.Slf4j;
