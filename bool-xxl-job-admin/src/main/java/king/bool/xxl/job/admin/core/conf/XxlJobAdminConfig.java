@@ -1,6 +1,7 @@
 package king.bool.xxl.job.admin.core.conf;
 
 import king.bool.xxl.job.admin.core.scheduler.XxlJobScheduler;
+import king.bool.xxl.job.admin.dao.*;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -57,27 +58,27 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 //    @Value("${spring.mail.from}")
 //    private String emailFrom;
 
-//    @Value("${xxl.job.triggerpool.fast.max}")
-//    private int triggerPoolFastMax;
-//
-//    @Value("${xxl.job.triggerpool.slow.max}")
-//    private int triggerPoolSlowMax;
-//
+    @Value("${xxl.job.triggerpool.fast.max}")
+    private int triggerPoolFastMax;
+
+    @Value("${xxl.job.triggerpool.slow.max}")
+    private int triggerPoolSlowMax;
+
 //    @Value("${xxl.job.logretentiondays}")
 //    private int logretentiondays;
 
     // dao, service
 
-//    @Resource
-//    private XxlJobLogDao xxlJobLogDao;
-//    @Resource
-//    private XxlJobInfoDao xxlJobInfoDao;
-//    @Resource
-//    private XxlJobRegistryDao xxlJobRegistryDao;
-//    @Resource
-//    private XxlJobGroupDao xxlJobGroupDao;
-//    @Resource
-//    private XxlJobLogReportDao xxlJobLogReportDao;
+    @Resource
+    private XxlJobLogDao xxlJobLogDao;
+    @Resource
+    private XxlJobInfoDao xxlJobInfoDao;
+    @Resource
+    private XxlJobRegistryDao xxlJobRegistryDao;
+    @Resource
+    private XxlJobGroupDao xxlJobGroupDao;
+    @Resource
+    private XxlJobLogReportDao xxlJobLogReportDao;
 //    @Resource
 //    private JavaMailSender mailSender;
     @Resource
@@ -102,21 +103,21 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 //    public String getEmailFrom() {
 //        return emailFrom;
 //    }
-//
-//    public int getTriggerPoolFastMax() {
-//        if (triggerPoolFastMax < 200) {
-//            return 200;
-//        }
-//        return triggerPoolFastMax;
-//    }
-//
-//    public int getTriggerPoolSlowMax() {
-//        if (triggerPoolSlowMax < 100) {
-//            return 100;
-//        }
-//        return triggerPoolSlowMax;
-//    }
-//
+
+    public int getTriggerPoolFastMax() {
+        if (triggerPoolFastMax < 200) {
+            return 200;
+        }
+        return triggerPoolFastMax;
+    }
+
+    public int getTriggerPoolSlowMax() {
+        if (triggerPoolSlowMax < 100) {
+            return 100;
+        }
+        return triggerPoolSlowMax;
+    }
+
 //    public int getLogretentiondays() {
 //        if (logretentiondays < 7) {
 //            return -1;  // Limit greater than or equal to 7, otherwise close
@@ -124,25 +125,25 @@ public class XxlJobAdminConfig implements InitializingBean, DisposableBean {
 //        return logretentiondays;
 //    }
 
-//    public XxlJobLogDao getXxlJobLogDao() {
-//        return xxlJobLogDao;
-//    }
+    public XxlJobLogDao getXxlJobLogDao() {
+        return xxlJobLogDao;
+    }
 
-//    public XxlJobInfoDao getXxlJobInfoDao() {
-//        return xxlJobInfoDao;
-//    }
+    public XxlJobInfoDao getXxlJobInfoDao() {
+        return xxlJobInfoDao;
+    }
 
-//    public XxlJobRegistryDao getXxlJobRegistryDao() {
-//        return xxlJobRegistryDao;
-//    }
+    public XxlJobRegistryDao getXxlJobRegistryDao() {
+        return xxlJobRegistryDao;
+    }
 
-//    public XxlJobGroupDao getXxlJobGroupDao() {
-//        return xxlJobGroupDao;
-//    }
+    public XxlJobGroupDao getXxlJobGroupDao() {
+        return xxlJobGroupDao;
+    }
 
-//    public XxlJobLogReportDao getXxlJobLogReportDao() {
-//        return xxlJobLogReportDao;
-//    }
+    public XxlJobLogReportDao getXxlJobLogReportDao() {
+        return xxlJobLogReportDao;
+    }
 
 //    public JavaMailSender getMailSender() {
 //        return mailSender;

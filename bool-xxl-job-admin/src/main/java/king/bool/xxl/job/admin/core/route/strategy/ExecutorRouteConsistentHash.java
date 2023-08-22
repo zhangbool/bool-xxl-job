@@ -93,7 +93,6 @@ public class ExecutorRouteConsistentHash extends ExecutorRouter {
 //        String address = hashJob(triggerParam.getJobId(), addressList);
 //        return new ResultModel(ResultModel.SUCCESS_CODE, address);
 
-
         // 这个是一个简单的hash算法
         // 这里会有一个问题, 如果有节点的增加或者删除, 可能会造成数据命中无效删除节点数据
         int index = triggerParam.getJobId() % addressList.size();

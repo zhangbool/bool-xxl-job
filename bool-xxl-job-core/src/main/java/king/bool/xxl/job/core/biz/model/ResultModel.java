@@ -56,5 +56,11 @@ public class ResultModel {
         this.content = data;
     }
 
+    public int getCode() {
+        return code;
+    }
 
+    public Object getContent() {
+        return content;
+    }
 }

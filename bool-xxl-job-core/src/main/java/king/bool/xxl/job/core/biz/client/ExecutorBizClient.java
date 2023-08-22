@@ -1,7 +1,7 @@
 package king.bool.xxl.job.core.biz.client;
 
 import king.bool.xxl.job.core.biz.ExecutorBiz;
-import king.bool.xxl.job.core.biz.model.ResultModel;
+import king.bool.xxl.job.core.biz.model.*;
 
 /**
  * @author : 不二
@@ -33,7 +33,7 @@ public class ExecutorBizClient implements ExecutorBiz {
         return null;
     }
 
-    /*@Override
+    @Override
     public ResultModel idleBeat(IdleBeatParam idleBeatParam) {
         return null;
     }
@@ -51,5 +51,5 @@ public class ExecutorBizClient implements ExecutorBiz {
     @Override
     public ResultModel log(LogParam logParam) {
         return null;
-    }*/
+    }
 }

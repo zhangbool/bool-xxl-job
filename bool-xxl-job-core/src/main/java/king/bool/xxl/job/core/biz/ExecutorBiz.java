@@ -1,7 +1,7 @@
 package king.bool.xxl.job.core.biz;
 
 
-import king.bool.xxl.job.core.biz.model.ResultModel;
+import king.bool.xxl.job.core.biz.model.*;
 
 /**
  * Created by xuxueli on 17/3/1.
@@ -20,27 +20,27 @@ public interface ExecutorBiz {
      * @param idleBeatParam
      * @return
      */
-    /*public ResultModel idleBeat(IdleBeatParam idleBeatParam);
+    public ResultModel idleBeat(IdleBeatParam idleBeatParam);
 
-    *//**
+    /**
      * run
      * @param triggerParam
      * @return
-     *//*
+     */
     public ResultModel run(TriggerParam triggerParam);
 
-    *//**
+    /**
      * kill
      * @param killParam
      * @return
-     *//*
+     */
     public ResultModel kill(KillParam killParam);
 
-    *//**
+    /**
      * log
      * @param logParam
      * @return
-     *//*
-    public ResultModel log(LogParam logParam);*/
+     */
+    public ResultModel log(LogParam logParam);
 
 }

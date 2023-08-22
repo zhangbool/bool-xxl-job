@@ -6,7 +6,11 @@ import king.bool.xxl.job.admin.core.util.I18nUtil;
 /**
  * @author : 不二
  * @date : 2023/8/21-23:13
- * @desc :
+ * @desc : 路由策略:
+ *         比如: 第一台机器执行
+ *              最后一台机器执行
+ *              轮训执行
+ *              ....
  **/
 public enum ExecutorRouteStrategyEnum {
 

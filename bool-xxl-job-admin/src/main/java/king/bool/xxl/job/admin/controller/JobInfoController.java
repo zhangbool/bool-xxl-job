@@ -2,16 +2,21 @@ package king.bool.xxl.job.admin.controller;
 
 import king.bool.xxl.job.admin.core.exception.XxlJobException;
 import king.bool.xxl.job.admin.core.model.XxlJobGroup;
+import king.bool.xxl.job.admin.core.model.XxlJobInfo;
 import king.bool.xxl.job.admin.core.model.XxlJobUser;
 import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
+import king.bool.xxl.job.admin.core.thread.JobTriggerPoolHelper;
+import king.bool.xxl.job.admin.core.trigger.TriggerTypeEnum;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
 import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
 import king.bool.xxl.job.admin.service.LoginService;
 import king.bool.xxl.job.admin.service.XxlJobService;
+import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import king.bool.xxl.job.core.glue.GlueTypeEnum;
+import king.bool.xxl.job.core.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,10 +26,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author : 不二
@@ -105,6 +107,84 @@ public class JobInfoController {
                                         int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
 
         return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
+    }
+
+
+    @RequestMapping("/add")
+    @ResponseBody
+    public ResultModel add(XxlJobInfo jobInfo) {
+        return xxlJobService.add(jobInfo);
+    }
+
+    @RequestMapping("/update")
+    @ResponseBody
+    public ResultModel update(XxlJobInfo jobInfo) {
+        return xxlJobService.update(jobInfo);
+    }
+
+    @RequestMapping("/remove")
+    @ResponseBody
+    public ResultModel remove(int id) {
+        return xxlJobService.remove(id);
+    }
+
+    @RequestMapping("/stop")
+    @ResponseBody
+    public ResultModel pause(int id) {
+        return xxlJobService.stop(id);
+    }
+
+    @RequestMapping("/start")
+    @ResponseBody
+    public ResultModel start(int id) {
+        return xxlJobService.start(id);
+    }
+
+    @RequestMapping("/trigger")
+    @ResponseBody
+    //@PermissionLimit(limit = false)
+    public ResultModel triggerJob(int id, String executorParam, String addressList) {
+        // force cover job param
+        if (executorParam == null) {
+            executorParam = "";
+        }
+
+        // #todo: 这里先不处理
+        // 这里是执行job,包括: 执行一次, 查询日志, 注册节点, 下次执行时间等....
+        // 这里是手动触发
+        JobTriggerPoolHelper.trigger(id, TriggerTypeEnum.MANUAL, -1, null, executorParam, addressList);
+        return ResultModel.SUCCESS;
+    }
+
+    @RequestMapping("/nextTriggerTime")
+    @ResponseBody
+    public ResultModel nextTriggerTime(String scheduleType, String scheduleConf) {
+
+        XxlJobInfo paramXxlJobInfo = new XxlJobInfo();
+        paramXxlJobInfo.setScheduleType(scheduleType);
+        paramXxlJobInfo.setScheduleConf(scheduleConf);
+
+        List<String> result = new ArrayList<>();
+
+        // #todo: 这里先不处理
+        /*try {
+            Date lastTime = new Date();
+            for (int i = 0; i < 5; i++) {
+
+                lastTime = JobScheduleHelper.generateNextValidTime(paramXxlJobInfo, lastTime);
+                if (lastTime != null) {
+                    result.add(DateUtil.formatDateTime(lastTime));
+                } else {
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
+            return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) + e.getMessage());
+        }*/
+
+        return new ResultModel(ResultModel.SUCCESS_CODE, result);
+
     }
 
 }

@@ -501,7 +501,7 @@ exit 0
     <div class="modal-dialog ">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" >${I18n.jobinfo_opt_run}</h4>
+                <h4 class="modal-title" >aaa${I18n.jobinfo_opt_run}</h4>
             </div>
             <div class="modal-body">
                 <form class="form-horizontal form" role="form" >
@@ -514,7 +514,7 @@ exit 0
                     <div class="form-group">
                         <label for="firstname" class="col-sm-2 control-label">${I18n.jobgroup_field_registryList}<font color="black">*</font></label>
                         <div class="col-sm-10">
-                            <textarea class="textarea form-control" name="addressList" placeholder="${I18n.jobinfo_opt_run_tips}" maxlength="512" style="height: 63px; line-height: 1.2;"></textarea>
+                            <textarea class="textarea form-control" name="addressList" placeholder="aaa${I18n.jobinfo_opt_run_tips}" maxlength="512" style="height: 63px; line-height: 1.2;"></textarea>
                         </div>
                     </div>
                     <hr>
