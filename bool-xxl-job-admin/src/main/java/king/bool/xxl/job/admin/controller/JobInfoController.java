@@ -3,21 +3,28 @@ package king.bool.xxl.job.admin.controller;
 import king.bool.xxl.job.admin.core.exception.XxlJobException;
 import king.bool.xxl.job.admin.core.model.XxlJobGroup;
 import king.bool.xxl.job.admin.core.model.XxlJobUser;
+import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
+import king.bool.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
+import king.bool.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
 import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
 import king.bool.xxl.job.admin.service.LoginService;
+import king.bool.xxl.job.admin.service.XxlJobService;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
+import king.bool.xxl.job.core.glue.GlueTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : 不二
@@ -31,17 +38,18 @@ public class JobInfoController {
 
     @Resource
     private XxlJobGroupDao xxlJobGroupDao;
+    @Resource
+    private XxlJobService xxlJobService;
 
     @RequestMapping
     public String index(HttpServletRequest request, Model model, @RequestParam(required = false, defaultValue = "-1") int jobGroup) {
 
         // 枚举-字典
-//        model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());	    // 路由策略-列表
-//        model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());								// Glue类型-字典
-//        model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
-//        model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values());	    				// 调度类型
-//        model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values());	    			// 调度过期策略
-
+        model.addAttribute("ExecutorRouteStrategyEnum", ExecutorRouteStrategyEnum.values());	    // 路由策略-列表
+        model.addAttribute("GlueTypeEnum", GlueTypeEnum.values());								    // Glue类型-字典
+        model.addAttribute("ExecutorBlockStrategyEnum", ExecutorBlockStrategyEnum.values());	    // 阻塞处理策略-字典
+        model.addAttribute("ScheduleTypeEnum", ScheduleTypeEnum.values());	    				    // 调度类型
+        model.addAttribute("MisfireStrategyEnum", MisfireStrategyEnum.values());	    			// 调度过期策略
 
         // 执行器列表
         List<XxlJobGroup> jobGroupList_all =  xxlJobGroupDao.findAll();
@@ -54,7 +62,6 @@ public class JobInfoController {
 
         model.addAttribute("JobGroupList", jobGroupList);
         model.addAttribute("jobGroup", jobGroup);
-
 
         return "jobinfo/jobinfo.index";
     }
@@ -89,6 +96,15 @@ public class JobInfoController {
         if (!loginUser.validPermission(jobGroup)) {
             throw new RuntimeException(I18nUtil.getString("system_permission_limit") + "[username="+ loginUser.getUsername() +"]");
         }
+    }
+
+    @RequestMapping("/pageList")
+    @ResponseBody
+    public Map<String, Object> pageList(@RequestParam(required = false, defaultValue = "0") int start,
+                                        @RequestParam(required = false, defaultValue = "10") int length,
+                                        int jobGroup, int triggerStatus, String jobDesc, String executorHandler, String author) {
+
+        return xxlJobService.pageList(start, length, jobGroup, triggerStatus, jobDesc, executorHandler, author);
     }
 
 }

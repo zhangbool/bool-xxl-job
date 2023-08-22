@@ -3,11 +3,14 @@ package king.bool.xxl.job.core.enums;
 // 每个枚举都是通过 Class 在内部实现的，且所有的枚举值都是 public static final 的。
 public enum ExecutorBlockStrategyEnum {
 
+    // 序列化执行
     SERIAL_EXECUTION("Serial execution"),
 
+    // #todo: 丢弃后续调度???
     /*CONCURRENT_EXECUTION("并行"),*/
     DISCARD_LATER("Discard Later"),
 
+    // #todo: 覆盖之前调度???
     COVER_EARLY("Cover Early");
 
     private String title;
