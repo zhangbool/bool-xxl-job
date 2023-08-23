@@ -10,9 +10,7 @@ $(function() {
 			url: base_url + "/jobinfo/pageList",
 			type:"post",
 	        data : function ( d ) {
-
 				console.log("---------------------" + JSON.stringify($('#jobGroup')));
-
 	        	var obj = {};
 	        	obj.jobGroup = $('#jobGroup').val();
                 obj.triggerStatus = $('#triggerStatus').val();
@@ -36,7 +34,7 @@ $(function() {
 					},
 	                {
 	                	"data": 'jobGroup',
-	                	"visible" : false,
+	                	"visible" : true,
 	                	"render": function ( data, type, row ) {
 	            			var groupMenu = $("#jobGroup").find("option");
 	            			for ( var index in $("#jobGroup").find("option")) {
@@ -45,12 +43,13 @@ $(function() {
 								}
 							}
 	            			return data;
-	            		}
+	            		},
+						"width":'5%'
             		},
 	                {
 	                	"data": 'jobDesc',
 						"visible" : true,
-						"width":'25%'
+						"width":'20%'
 					},
 					{
 						"data": 'scheduleType',
@@ -109,12 +108,15 @@ $(function() {
 	                	}
 	                },
 	                {
+						// 这里是最后一列操作, 这里是下拉框
 						"data": I18n.system_opt ,
 						"width":'10%',
 	                	"render": function ( data, type, row ) {
 	                		return function(){
-
+								// #todo: 这里挺有意思, 不过还没有深入去学习
                                 // status
+								// 这里根据数据的不同, 添加不同的html代码
+								// 代码里面有id, 后续在根据id的不同操作进行请求不同的接口
                                 var start_stop_div = "";
                                 if (1 == row.triggerStatus ) {
                                     start_stop_div = '<li><a href="javascript:void(0);" class="job_operate" _type="job_pause" >'+ I18n.jobinfo_opt_stop +'</a></li>\n';
@@ -210,6 +212,7 @@ $(function() {
     });
 
 	// job operate
+	// #todo: 这种写法是什么规则, ??????
 	$("#job_list").on('click', '.job_operate',function() {
 		var typeName;
 		var url;
@@ -273,6 +276,8 @@ $(function() {
 
         $('#jobTriggerModal').modal({backdrop: false, keyboard: false}).modal('show');
     });
+
+
     $("#jobTriggerModal .ok").on('click',function() {
         $.ajax({
             type : 'POST',

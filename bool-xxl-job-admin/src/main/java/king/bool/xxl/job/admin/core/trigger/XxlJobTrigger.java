@@ -7,7 +7,6 @@ import king.bool.xxl.job.admin.core.model.XxlJobLog;
 import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
-import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.admin.core.util.ThrowableUtil;
 import king.bool.xxl.job.core.biz.ExecutorBiz;
 import king.bool.xxl.job.core.biz.model.ResultModel;
@@ -49,15 +48,21 @@ public class XxlJobTrigger {
                                String executorParam,
                                String addressList) {
 
+        log.info(">>>>>>>>>>>>>>> 开始调用触发器 >>>>>>>>>>>>>>> ");
+
+        // 在触发的时候, 会传入jobId, 拿到job后
         // load data
         XxlJobInfo jobInfo = XxlJobAdminConfig.getAdminConfig().getXxlJobInfoDao().loadById(jobId);
         if (jobInfo == null) {
             log.warn(">>>>>>>>>>>> trigger fail, jobId invalid，jobId={}", jobId);
             return;
         }
+
+        // 手动传入参数, 则优先使用传入参数而非数据库
         if (executorParam != null) {
             jobInfo.setExecutorParam(executorParam);
         }
+
         int finalFailRetryCount = failRetryCount>=0?failRetryCount:jobInfo.getExecutorFailRetryCount();
         XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(jobInfo.getJobGroup());
 
@@ -67,6 +72,7 @@ public class XxlJobTrigger {
             group.setAddressList(addressList.trim());
         }
 
+        // #todo: 这里是做什么的?????先放着
         // sharding param
         int[] shardingParam = null;
         if (executorShardingParam!=null){
@@ -77,6 +83,8 @@ public class XxlJobTrigger {
                 shardingParam[1] = Integer.valueOf(shardingArr[1]);
             }
         }
+
+
         if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST==ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null)
                 && group.getRegistryList()!=null && !group.getRegistryList().isEmpty()
                 && shardingParam==null) {
@@ -112,10 +120,16 @@ public class XxlJobTrigger {
     private static void processTrigger(XxlJobGroup group, XxlJobInfo jobInfo, int finalFailRetryCount, TriggerTypeEnum triggerType, int index, int total){
 
         // param
+        // 如果没有找到对应的阻塞策略, 则使用序列化执行
         ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum.match(jobInfo.getExecutorBlockStrategy(), ExecutorBlockStrategyEnum.SERIAL_EXECUTION);  // block strategy
+
+        // 执行期路由策略
         ExecutorRouteStrategyEnum executorRouteStrategyEnum = ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null);    // route strategy
+
         String shardingParam = (ExecutorRouteStrategyEnum.SHARDING_BROADCAST==executorRouteStrategyEnum)?String.valueOf(index).concat("/").concat(String.valueOf(total)):null;
 
+
+        // 1, 保存日志
         // 1、save log-id
         XxlJobLog jobLog = new XxlJobLog();
         jobLog.setJobGroup(jobInfo.getJobGroup());
@@ -123,6 +137,8 @@ public class XxlJobTrigger {
         jobLog.setTriggerTime(new Date());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
         log.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
+
+
 
         // 2、init trigger-param
         TriggerParam triggerParam = new TriggerParam();

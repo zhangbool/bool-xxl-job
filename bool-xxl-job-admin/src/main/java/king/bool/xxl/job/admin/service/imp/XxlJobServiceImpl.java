@@ -1,23 +1,21 @@
 package king.bool.xxl.job.admin.service.imp;
 
+import king.bool.xxl.job.admin.core.cron.CronExpression;
 import king.bool.xxl.job.admin.core.model.XxlJobGroup;
 import king.bool.xxl.job.admin.core.model.XxlJobInfo;
 import king.bool.xxl.job.admin.core.model.XxlJobLogReport;
 import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.MisfireStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
+import king.bool.xxl.job.admin.core.thread.JobScheduleHelper;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
-import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
-import king.bool.xxl.job.admin.dao.XxlJobInfoDao;
-import king.bool.xxl.job.admin.dao.XxlJobLogDao;
-import king.bool.xxl.job.admin.dao.XxlJobLogReportDao;
+import king.bool.xxl.job.admin.dao.*;
 import king.bool.xxl.job.admin.service.XxlJobService;
 import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import king.bool.xxl.job.core.glue.GlueTypeEnum;
 import king.bool.xxl.job.core.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.support.CronExpression;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -38,8 +36,8 @@ public class XxlJobServiceImpl implements XxlJobService {
     private XxlJobInfoDao xxlJobInfoDao;
     @Resource
     public XxlJobLogDao xxlJobLogDao;
-//    @Resource
-//    private XxlJobLogGlueDao xxlJobLogGlueDao;
+    @Resource
+    private XxlJobLogGlueDao xxlJobLogGlueDao;
     @Resource
     private XxlJobLogReportDao xxlJobLogReportDao;
 
@@ -168,25 +166,31 @@ public class XxlJobServiceImpl implements XxlJobService {
 
     @Override
     public ResultModel update(XxlJobInfo jobInfo) {
-        return null;
-        /*// valid base
+
+        // 数据校验描述, 负责人是否存在
+        // valid base
         if (jobInfo.getJobDesc()==null || jobInfo.getJobDesc().trim().length()==0) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_jobdesc")) );
         }
+
         if (jobInfo.getAuthor()==null || jobInfo.getAuthor().trim().length()==0) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("system_please_input")+I18nUtil.getString("jobinfo_field_author")) );
         }
 
+        // 验证触发是否合理
         // valid trigger
         ScheduleTypeEnum scheduleTypeEnum = ScheduleTypeEnum.match(jobInfo.getScheduleType(), null);
         if (scheduleTypeEnum == null) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
         }
+
         if (scheduleTypeEnum == ScheduleTypeEnum.CRON) {
+            // 如果是通过定时cron来进行调度, 来判断是否是有效的cron表达式
             if (jobInfo.getScheduleConf()==null || !CronExpression.isValidExpression(jobInfo.getScheduleConf())) {
                 return new ResultModel(ResultModel.FAIL_CODE, "Cron"+I18nUtil.getString("system_unvalid") );
             }
-        } else if (scheduleTypeEnum == ScheduleTypeEnum.FIX_RATE *//*|| scheduleTypeEnum == ScheduleTypeEnum.FIX_DELAY*//*) {
+        } else if (scheduleTypeEnum == ScheduleTypeEnum.FIX_RATE) {
+            // 固定频次, 则查看参数是否合理
             if (jobInfo.getScheduleConf() == null) {
                 return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
             }
@@ -200,6 +204,8 @@ public class XxlJobServiceImpl implements XxlJobService {
             }
         }
 
+
+        // 验证高级配置里面的数据, 比如说路由策略是否存在等等
         // valid advanced
         if (ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null) == null) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorRouteStrategy")+I18nUtil.getString("system_unvalid")) );
@@ -211,6 +217,8 @@ public class XxlJobServiceImpl implements XxlJobService {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("jobinfo_field_executorBlockStrategy")+I18nUtil.getString("system_unvalid")) );
         }
 
+
+        // 验证子job, #todo: 这里暂时不看, 搞懂了admin和executor的交互之后再看这些细节
         // 》ChildJobId valid
         if (jobInfo.getChildJobId()!=null && jobInfo.getChildJobId().trim().length()>0) {
             String[] childJobIds = jobInfo.getChildJobId().split(",");
@@ -237,23 +245,33 @@ public class XxlJobServiceImpl implements XxlJobService {
             jobInfo.setChildJobId(temp);
         }
 
+
+        // 验证job_group是否ok
+        // 一个executor是一个实例, 多个实例可以组成一个群组group.
         // group valid
         XxlJobGroup jobGroup = xxlJobGroupDao.load(jobInfo.getJobGroup());
         if (jobGroup == null) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("jobinfo_field_jobgroup")+I18nUtil.getString("system_unvalid")) );
         }
 
+        // 验证job是否ok
         // stage job info
         XxlJobInfo exists_jobInfo = xxlJobInfoDao.loadById(jobInfo.getId());
         if (exists_jobInfo == null) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("jobinfo_field_id")+I18nUtil.getString("system_not_found")) );
         }
 
+
+        // #todo: 暂时不知道这里5s是干啥到, 预读是啥?
         // next trigger time (5s后生效，避开预读周期)
         long nextTriggerTime = exists_jobInfo.getTriggerNextTime();
+        // 判断调度方式是否一致, 包括: 调度方式(fix还是cron) 和 调度时间等 都未变
         boolean scheduleDataNotChanged = jobInfo.getScheduleType().equals(exists_jobInfo.getScheduleType()) && jobInfo.getScheduleConf().equals(exists_jobInfo.getScheduleConf());
+
+        // 如果在运行, 而且调度方式变化的话:
         if (exists_jobInfo.getTriggerStatus() == 1 && !scheduleDataNotChanged) {
             try {
+                // 当前时间+5s
                 Date nextValidTime = JobScheduleHelper.generateNextValidTime(jobInfo, new Date(System.currentTimeMillis() + JobScheduleHelper.PRE_READ_MS));
                 if (nextValidTime == null) {
                     return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("schedule_type")+I18nUtil.getString("system_unvalid")) );
@@ -279,41 +297,46 @@ public class XxlJobServiceImpl implements XxlJobService {
         exists_jobInfo.setExecutorTimeout(jobInfo.getExecutorTimeout());
         exists_jobInfo.setExecutorFailRetryCount(jobInfo.getExecutorFailRetryCount());
         exists_jobInfo.setChildJobId(jobInfo.getChildJobId());
+        // ??????
         exists_jobInfo.setTriggerNextTime(nextTriggerTime);
 
         exists_jobInfo.setUpdateTime(new Date());
         xxlJobInfoDao.update(exists_jobInfo);
 
-
-        return ResultModel.SUCCESS;*/
+        return ResultModel.SUCCESS;
     }
 
     @Override
     public ResultModel remove(int id) {
-        return null;
-        /*XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+
+        XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
         if (xxlJobInfo == null) {
             return ResultModel.SUCCESS;
         }
 
         xxlJobInfoDao.delete(id);
         xxlJobLogDao.delete(id);
+
         xxlJobLogGlueDao.deleteByJobId(id);
-        return ResultModel.SUCCESS;*/
+        return ResultModel.SUCCESS;
     }
 
     @Override
     public ResultModel start(int id) {
+        // 简单来讲, admin这边开启job, 其实啥也没做, 就是更新数据库了
+        // #todo: 难道admin和executor完全没有交互吗, executor直接去读取数据库来处理???
 
-        return null;
-        /*XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
+        XxlJobInfo xxlJobInfo = xxlJobInfoDao.loadById(id);
 
         // valid
+        // 先验证
         ScheduleTypeEnum scheduleTypeEnum = ScheduleTypeEnum.match(xxlJobInfo.getScheduleType(), ScheduleTypeEnum.NONE);
         if (ScheduleTypeEnum.NONE == scheduleTypeEnum) {
             return new ResultModel(ResultModel.FAIL_CODE, (I18nUtil.getString("schedule_type_none_limit_start")) );
         }
 
+
+        // #todo: 没看懂...预读周期是干啥的
         // next trigger time (5s后生效，避开预读周期)
         long nextTriggerTime = 0;
         try {
@@ -333,7 +356,7 @@ public class XxlJobServiceImpl implements XxlJobService {
 
         xxlJobInfo.setUpdateTime(new Date());
         xxlJobInfoDao.update(xxlJobInfo);
-        return ResultModel.SUCCESS;*/
+        return ResultModel.SUCCESS;
     }
 
     @Override

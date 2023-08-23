@@ -11,6 +11,7 @@ import java.util.Date;
  **/
 @Data
 public class XxlJobInfo {
+
     private int id;				// 主键ID
 
     private int jobGroup;		// 执行器主键ID

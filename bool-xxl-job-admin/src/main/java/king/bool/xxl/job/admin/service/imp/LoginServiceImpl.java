@@ -32,11 +32,6 @@ public class LoginServiceImpl implements LoginService {
 
         String tokenJson = JacksonUtil.writeValueAsString(xxlJobUser);
         log.info("tokenJson: " + tokenJson);
-
-        /*for (Byte by : tokenJson.getBytes()) {
-            log.info("打印by：" + by);
-        }*/
-
         final BigInteger bigInteger = new BigInteger(tokenJson.getBytes());
         // log.info("bigInteger是：" + bigInteger);
 

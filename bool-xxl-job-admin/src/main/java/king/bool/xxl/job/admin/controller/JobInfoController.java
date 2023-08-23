@@ -16,7 +16,6 @@ import king.bool.xxl.job.admin.service.XxlJobService;
 import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import king.bool.xxl.job.core.glue.GlueTypeEnum;
-import king.bool.xxl.job.core.util.DateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -140,6 +139,9 @@ public class JobInfoController {
         return xxlJobService.start(id);
     }
 
+
+    // 这里是触发器, 如果触发, 则可能会有:
+    //     执行任务触发器, 这个时候会和集群执行器进行交互
     @RequestMapping("/trigger")
     @ResponseBody
     //@PermissionLimit(limit = false)
@@ -149,9 +151,10 @@ public class JobInfoController {
             executorParam = "";
         }
 
+
         // #todo: 这里先不处理
         // 这里是执行job,包括: 执行一次, 查询日志, 注册节点, 下次执行时间等....
-        // 这里是手动触发
+        // 这里是手动触发, 这里可以传入参数, addressList地址如果传入, 会进行判断, 如果没有, 则使用默认的数据库中记录的job地址
         JobTriggerPoolHelper.trigger(id, TriggerTypeEnum.MANUAL, -1, null, executorParam, addressList);
         return ResultModel.SUCCESS;
     }

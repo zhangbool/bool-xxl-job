@@ -127,7 +127,6 @@ public class JobLogController {
 
     @RequestMapping("/logDetailPage")
     public String logDetailPage(int id, Model model){
-
         return "joblog/joblog.detail";
     }
 

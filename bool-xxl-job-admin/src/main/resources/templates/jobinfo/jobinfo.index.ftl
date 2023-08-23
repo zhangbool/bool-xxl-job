@@ -74,9 +74,12 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="box">
-                        <#--<div class="box-header hide">
+
+                        <#-- hide这里代表隐藏 -->
+                        <div class="box-header hide">
                             <h3 class="box-title">调度列表</h3>
-                        </div>-->
+                        </div>
+
                         <div class="box-body" >
                             <table id="job_list" class="table table-bordered table-striped" width="100%" >
                                 <thead>
@@ -496,6 +499,7 @@ exit 0
     </div>
 </div>
 
+<#-- 这里是点击执行一次的弹出modal弹框 -->
 <#-- trigger -->
 <div class="modal fade" id="jobTriggerModal" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog ">
