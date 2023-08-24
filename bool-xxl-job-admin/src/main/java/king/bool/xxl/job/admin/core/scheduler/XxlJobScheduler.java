@@ -1,6 +1,8 @@
 package king.bool.xxl.job.admin.core.scheduler;
 
 import king.bool.xxl.job.admin.core.conf.XxlJobAdminConfig;
+import king.bool.xxl.job.admin.core.thread.JobScheduleHelper;
+import king.bool.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
 import king.bool.xxl.job.core.biz.ExecutorBiz;
 import king.bool.xxl.job.core.biz.client.ExecutorBizClient;
@@ -24,22 +26,22 @@ public class XxlJobScheduler {
         initI18n();
 
         // admin trigger pool start
-//        JobTriggerPoolHelper.toStart();
-//
-//        // admin registry monitor run
+        JobTriggerPoolHelper.toStart();
+
+        // admin registry monitor run
 //        JobRegistryHelper.getInstance().start();
-//
-//        // admin fail-monitor run
+
+        // admin fail-monitor run
 //        JobFailMonitorHelper.getInstance().start();
-//
-//        // admin lose-monitor run ( depend on JobTriggerPoolHelper )
+
+        // admin lose-monitor run ( depend on JobTriggerPoolHelper )
 //        JobCompleteHelper.getInstance().start();
-//
-//        // admin log report start
+
+        // admin log report start
 //        JobLogReportHelper.getInstance().start();
-//
-//        // start-schedule  ( depend on JobTriggerPoolHelper )
-//        JobScheduleHelper.getInstance().start();
+
+        // start-schedule  ( depend on JobTriggerPoolHelper )
+        JobScheduleHelper.getInstance().start();
 
         log.info(">>>>>>>>> init xxl-job admin success.");
     }
@@ -48,22 +50,22 @@ public class XxlJobScheduler {
     public void destroy() throws Exception {
 
         // stop-schedule
-//        JobScheduleHelper.getInstance().toStop();
-//
-//        // admin log report stop
+        JobScheduleHelper.getInstance().toStop();
+
+        // admin log report stop
 //        JobLogReportHelper.getInstance().toStop();
-//
-//        // admin lose-monitor stop
+
+        // admin lose-monitor stop
 //        JobCompleteHelper.getInstance().toStop();
-//
-//        // admin fail-monitor stop
+
+        // admin fail-monitor stop
 //        JobFailMonitorHelper.getInstance().toStop();
-//
-//        // admin registry stop
+
+        // admin registry stop
 //        JobRegistryHelper.getInstance().toStop();
-//
-//        // admin trigger pool stop
-//        JobTriggerPoolHelper.toStop();
+
+        // admin trigger pool stop
+        JobTriggerPoolHelper.toStop();
 
     }
 
@@ -80,12 +82,14 @@ public class XxlJobScheduler {
 
     // ---------------------- executor-client ----------------------
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
-    public static ExecutorBiz getExecutorBiz(String address) throws Exception {
+    public static ExecutorBiz getExecutorBiz(String address) {
+
         // valid
         if (address==null || address.trim().length()==0) {
             return null;
         }
 
+        // 如果之前已经用过, 放入了map里面, 就直接从里面获取
         // load-cache
         address = address.trim();
         ExecutorBiz executorBiz = executorBizRepository.get(address);
@@ -93,9 +97,11 @@ public class XxlJobScheduler {
             return executorBiz;
         }
 
+        // 如果从内存中没有获取到, 说明是第一次使用
         // set-cache
+        // #todo: token是干啥的
         executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
-
+        // 创建好对象, 放入内存map中
         executorBizRepository.put(address, executorBiz);
         return executorBiz;
     }

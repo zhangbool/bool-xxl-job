@@ -9,6 +9,7 @@ import lombok.Data;
  **/
 @Data
 public class TriggerParam {
+
     private static final long serialVersionUID = 42L;
 
     private int jobId;

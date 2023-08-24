@@ -14,6 +14,7 @@ import java.util.List;
 public class ExecutorRouteFirst extends ExecutorRouter {
     @Override
     public ResultModel route(TriggerParam triggerParam, List<String> addressList) {
+        // 这里ResultModel里面的content的类型是string哈
         return new ResultModel(ResultModel.SUCCESS_CODE, addressList.get(0));
     }
 }

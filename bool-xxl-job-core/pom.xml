@@ -20,6 +20,44 @@
 
 
     <dependencies>
+
+        <!-- ********************** embed server: netty + gson ********************** -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+            <version>${netty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+
+        <!-- spring-context -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- ********************** plugin ********************** -->
+        <!-- 这里好像是拿类加载器, 暂不清楚是干啥的 -->
+        <!-- groovy-all -->
+        <dependency>
+            <groupId>org.apache.groovy</groupId>
+            <artifactId>groovy</artifactId>
+            <version>${groovy.version}</version>
+        </dependency>
+
+        <!-- 序列化Java对象为JSON字符串，或反序列化JSON字符串成Java对象 -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+
+
         <!-- lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -27,5 +65,17 @@
             <version>${lombok.verson}</version>
             <optional>true</optional>
         </dependency>
+
+        <!-- 注意: 在lombok中, 如果使用@Slf4j注解, 没有下面这个包, 是不能进行静态方法的log的 -->
+        <!-- #todo: 为啥为啥为啥为啥, 需要看下!!!!!!! -->
+        <!-- ********************** base ********************** -->
+        <!-- slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j-api.version}</version>
+        </dependency>
+
+
     </dependencies>
 </project>

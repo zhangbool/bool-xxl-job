@@ -9,7 +9,7 @@ import king.bool.xxl.job.core.biz.model.*;
 public interface ExecutorBiz {
 
     /**
-     * beat
+     * beat 这个是心跳程序吗
      * @return
      */
     public ResultModel beat();

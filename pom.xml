@@ -27,6 +27,16 @@
         <lombok.verson>1.18.10</lombok.verson>
 
 
+        <netty.version>4.1.90.Final</netty.version>
+        <gson.version>2.10.1</gson.version>
+        <spring.version>5.3.26</spring.version>
+        <groovy.version>4.0.10</groovy.version>
+
+        <slf4j-api.version>1.7.36</slf4j-api.version>
+
+
+
+
     </properties>
 
     <!-- 这里并没有相关依赖 -->

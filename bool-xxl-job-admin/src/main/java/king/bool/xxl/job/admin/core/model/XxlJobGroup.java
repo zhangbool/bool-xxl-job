@@ -22,6 +22,7 @@ public class XxlJobGroup {
     private String addressList;     // 执行器地址列表，多地址逗号分隔(手动录入)
     private Date updateTime;
 
+    // 这个就是addressList拆开而已
     private List<String> registryList;  // 执行器地址列表(系统注册)
     public List<String> getRegistryList() {
         if (addressList!=null && addressList.trim().length()>0) {

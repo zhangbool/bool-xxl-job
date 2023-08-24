@@ -9,7 +9,7 @@ import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
 import king.bool.xxl.job.admin.dao.XxlJobInfoDao;
 import king.bool.xxl.job.admin.dao.XxlJobRegistryDao;
 import king.bool.xxl.job.core.biz.model.ResultModel;
-import king.bool.xxl.job.core.config.RegistryConfig;
+import king.bool.xxl.job.core.enums.RegistryConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

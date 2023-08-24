@@ -84,7 +84,7 @@ public class XxlJobTrigger {
             }
         }
 
-
+        // 这里的processTrigger是关键
         if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST==ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null)
                 && group.getRegistryList()!=null && !group.getRegistryList().isEmpty()
                 && shardingParam==null) {
@@ -121,13 +121,14 @@ public class XxlJobTrigger {
 
         // param
         // 如果没有找到对应的阻塞策略, 则使用序列化执行
-        ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum.match(jobInfo.getExecutorBlockStrategy(), ExecutorBlockStrategyEnum.SERIAL_EXECUTION);  // block strategy
+        ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum
+                .match(jobInfo.getExecutorBlockStrategy(), ExecutorBlockStrategyEnum.SERIAL_EXECUTION);  // block strategy
 
         // 执行期路由策略
-        ExecutorRouteStrategyEnum executorRouteStrategyEnum = ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null);    // route strategy
+        ExecutorRouteStrategyEnum executorRouteStrategyEnum = ExecutorRouteStrategyEnum
+                .match(jobInfo.getExecutorRouteStrategy(), null);    // route strategy
 
         String shardingParam = (ExecutorRouteStrategyEnum.SHARDING_BROADCAST==executorRouteStrategyEnum)?String.valueOf(index).concat("/").concat(String.valueOf(total)):null;
-
 
         // 1, 保存日志
         // 1、save log-id
@@ -137,8 +138,6 @@ public class XxlJobTrigger {
         jobLog.setTriggerTime(new Date());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
         log.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
-
-
 
         // 2、init trigger-param
         TriggerParam triggerParam = new TriggerParam();
@@ -155,6 +154,7 @@ public class XxlJobTrigger {
         triggerParam.setBroadcastIndex(index);
         triggerParam.setBroadcastTotal(total);
 
+
         // 3、init address
         String address = null;
         ResultModel routeAddressResult = null;
@@ -166,10 +166,13 @@ public class XxlJobTrigger {
                     address = group.getRegistryList().get(0);
                 }
             } else {
+                // route就是获取实际的策略得出的ResultModel, ResultModel的content应该是String类型
                 routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
                 if (routeAddressResult.getCode() == ResultModel.SUCCESS_CODE) {
                     // #todo: 这里我content不是string
+                    // 表面上是Obj, 实际上是String类型, 直接toString应该是没啥问题的
                     address = routeAddressResult.getContent().toString();
+                    log.info("---------------------> 路由成功, 最后的结果是: {} <---------------------",  address);
                 }
             }
         } else {
@@ -177,6 +180,8 @@ public class XxlJobTrigger {
         }
 
         // 4、trigger remote executor
+        // 根据路由得到的地址, 开始触发远程的executor
+        // 这里开始调度远程!!!!!!!
         ResultModel triggerResult = null;
         if (address != null) {
             triggerResult = runExecutor(triggerParam, address);
@@ -185,6 +190,7 @@ public class XxlJobTrigger {
         }
 
         // 5、collection trigger info
+        // 获取触发信息
         StringBuffer triggerMsgSb = new StringBuffer();
         triggerMsgSb.append(I18nUtil.getString("jobconf_trigger_type")).append("：").append(triggerType.getTitle());
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobconf_trigger_admin_adress")).append("：").append(IpUtil.getIp());
@@ -201,6 +207,7 @@ public class XxlJobTrigger {
 
         triggerMsgSb.append("<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>"+ I18nUtil.getString("jobconf_trigger_run") +"<<<<<<<<<<< </span><br>")
                 .append((routeAddressResult!=null&&routeAddressResult.getMsg()!=null)?routeAddressResult.getMsg()+"<br><br>":"").append(triggerResult.getMsg()!=null?triggerResult.getMsg():"");
+
 
         // 6、save log trigger-info
         jobLog.setExecutorAddress(address);
