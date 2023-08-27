@@ -40,6 +40,8 @@ public class XxlJobScheduler {
         // admin log report start
 //        JobLogReportHelper.getInstance().start();
 
+
+        // #todo:01: 这个类只是启动和关闭, 有啥用
         // start-schedule  ( depend on JobTriggerPoolHelper )
         JobScheduleHelper.getInstance().start();
 

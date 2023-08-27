@@ -3,6 +3,7 @@ $(function() {
 	// jobGroup change, job list init and select
 	$("#jobGroup").on("change", function () {
 		var jobGroup = $(this).children('option:selected').val();
+		console.log("jobGroup是: " + JSON.stringify(jobGroup));
 		$.ajax({
 			type : 'POST',
             async: false,   // async, avoid js invoke pagelist before jobId data init
@@ -10,9 +11,7 @@ $(function() {
 			data : {"jobGroup":jobGroup},
 			dataType : "json",
 			success : function(data){
-
 				console.log("getJobsByGroup结果是:" + JSON.stringify(data));
-
 				if (data.code == 200) {
 					$("#jobId").html( '<option value="0" >'+ I18n.system_all +'</option>' );
 					$.each(data.content, function (n, value) {
@@ -32,6 +31,7 @@ $(function() {
 			},
 		});
 	});
+
 	if ($("#jobGroup").attr("paramVal")){
 		$("#jobGroup").find("option[value='" + $("#jobGroup").attr("paramVal") + "']").attr("selected",true);
         $("#jobGroup").change();
@@ -81,6 +81,8 @@ $(function() {
 	        url: base_url + "/joblog/pageList" ,
             type:"post",
 	        data : function ( d ) {
+				// 这个里面的数据是请求的参数
+				console.log("请求到的数据是3333: " + JSON.stringify(d))
 	        	var obj = {};
 	        	obj.jobGroup = $('#jobGroup').val();
 	        	obj.jobId = $('#jobId').val();
@@ -88,6 +90,8 @@ $(function() {
 				obj.filterTime = $('#filterTime').val();
 	        	obj.start = d.start;
 	        	obj.length = d.length;
+				console.log("obj是: " + JSON.stringify(obj));
+
                 return obj;
             }
 	    },
@@ -100,7 +104,6 @@ $(function() {
 						"visible" : true,
                         "width":'10%',
 						"render": function ( data, type, row ) {
-
 							var jobhandler = '';
                             if (row.executorHandler) {
                                 jobhandler = "<br>JobHandler：" + row.executorHandler;
@@ -111,7 +114,7 @@ $(function() {
 							temp += jobhandler;
 							temp += '<br>'+ I18n.jobinfo_field_executorparam +'：' + row.executorParam;
 
-							return '<a class="logTips" href="javascript:;" >'+ row.jobId +'<span style="display:none;">'+ temp +'</span></a>';
+							return '<a class="logTips" href="javascript:;" >'+ row.jobId +'<span style="display:none;">' +  temp +'</span></a>';
 						}
 					},
 					{ "data": 'jobGroup', "visible" : false},
@@ -141,6 +144,7 @@ $(function() {
 						"data": 'triggerMsg',
                         "width":'10%',
 						"render": function ( data, type, row ) {
+							console.log("triggerMsg: "+ JSON.stringify(data))
 							return data?'<a class="logTips" href="javascript:;" >'+ I18n.system_show +'<span style="display:none;">'+ data +'</span></a>':I18n.system_empty;
 						}
 					},
@@ -172,7 +176,8 @@ $(function() {
 	                	"data": 'handleMsg',
                         "width":'10%',
 	                	"render": function ( data, type, row ) {
-	                		return data?'<a class="logTips" href="javascript:;" >'+ I18n.system_show +'<span style="display:none;">'+ data +'</span></a>':I18n.system_empty;
+							console.log("handleMsg: "+ JSON.stringify(data))
+							return data?'<a class="logTips" href="javascript:;" >'+ I18n.system_show +'<span style="display:none;">'+ data +'</span></a>':I18n.system_empty;
 	                	}
 	                },
 	                {
@@ -180,15 +185,15 @@ $(function() {
 						"bSortable": false,
                         "width":'10%',
 	                	"render": function ( data, type, row ) {
+
+							console.log("handleMsg: "+ JSON.stringify(data))
+
 	                		// better support expression or string, not function
 	                		return function () {
-		                		if (row.triggerCode == 200 || row.handleCode != 0){
 
-		                			/*var temp = '<a href="javascript:;" class="logDetail" _id="'+ row.id +'">'+ I18n.joblog_rolling_log +'</a>';
-		                			if(row.handleCode == 0){
-		                				temp += '<br><a href="javascript:;" class="logKill" _id="'+ row.id +'" style="color: red;" >'+ I18n.joblog_kill_log +'</a>';
-		                			}*/
-		                			//return temp;
+								console.log("ddddddddd===================")
+
+		                		if (row.triggerCode == 200 || row.handleCode != 0){
 
 									var logKillDiv = '';
 									if(row.handleCode == 0){
@@ -240,6 +245,8 @@ $(function() {
             }
         }
 	});
+
+
     logTable.on('xhr.dt',function(e, settings, json, xhr) {
         if (json.code && json.code != 200) {
             layer.msg( json.msg || I18n.system_api_error );
@@ -260,7 +267,6 @@ $(function() {
 	// logDetail look
 	$('#joblog_list').on('click', '.logDetail', function(){
 		var _id = $(this).attr('_id');
-
 		window.open(base_url + '/joblog/logDetailPage?id=' + _id);
 		return;
 	});

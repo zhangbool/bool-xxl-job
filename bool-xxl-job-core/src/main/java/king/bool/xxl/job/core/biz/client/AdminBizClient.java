@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * @author : 不二
  * @date : 2023/8/24-14:06
- * @desc :
+ * @desc : 管理员业务客户端
+ *         主要负责:
  **/
 public class AdminBizClient implements AdminBiz {
 
@@ -21,6 +22,7 @@ public class AdminBizClient implements AdminBiz {
 
     public AdminBizClient() {
     }
+
     public AdminBizClient(String addressUrl, String accessToken) {
         this.addressUrl = addressUrl;
         this.accessToken = accessToken;

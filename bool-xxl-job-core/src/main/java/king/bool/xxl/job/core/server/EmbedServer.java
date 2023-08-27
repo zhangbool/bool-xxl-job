@@ -32,6 +32,7 @@ import java.util.concurrent.*;
 public class EmbedServer {
 
     private ExecutorBiz executorBiz;
+
     private Thread thread;
 
     public void start(final String address, final int port, final String appname, final String accessToken) {

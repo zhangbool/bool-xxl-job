@@ -65,6 +65,12 @@ public class JobLogController {
             throw new XxlJobException(I18nUtil.getString("jobgroup_empty"));
         }
 
+        // 把JobGroupList添加到模型中, 方便页面上用
+        /*
+        <#list JobGroupList as group>
+            <option value="${group.id}" >${group.title}</option>
+        </#list>
+         */
         model.addAttribute("JobGroupList", jobGroupList);
 
         // 默认进入页面的时候jobId=0的

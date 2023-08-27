@@ -47,7 +47,6 @@
                         </select>
                     </div>
                 </div>
-
                 <div class="col-xs-2">
                     <div class="input-group">
                         <span class="input-group-addon">${I18n.joblog_status}</span>
@@ -108,11 +107,10 @@
             </div>
         </section>
     </div>
-
     <!-- footer -->
     <@netCommon.commonFooter />
 </div>
-
+aaaaaa
 <!-- 日志清理.模态框 -->
 <div class="modal fade" id="clearLogModal" tabindex="-1" role="dialog"  aria-hidden="true">
     <div class="modal-dialog">

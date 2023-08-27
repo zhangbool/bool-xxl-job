@@ -1,5 +1,7 @@
 package king.bool.xxl.job.admin.core.util;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,10 +11,11 @@ import javax.servlet.http.HttpServletResponse;
  * @date : 2023/8/21-10:50
  * @desc :
  **/
+@Slf4j
 public class CookieUtil {
 
     // 默认缓存时间,单位/秒, 2H
-    private static final int COOKIE_MAX_AGE = Integer.MAX_VALUE;
+    private static final int COOKIE_MAX_AGE = 7200;
     // 保存路径,根路径
     private static final String COOKIE_PATH = "/";
 
@@ -27,8 +30,9 @@ public class CookieUtil {
     public static void set(HttpServletResponse response, String key, String value, boolean ifRemember) {
         // cookie.setMaxAge(-1)：cookie 的 maxAge 属性的默认值就是 -1（其实只要是负数都是一个意思），
         // 表示只在浏览器内存中存活。一旦关闭浏览器窗口，那么 cookie 就会消失。
-        // 如果不关闭浏览器, 还是存在cookie, 也就是设置后, 不关闭浏览器, 一直有效, 所以登陆的时候
+        // 如果设置里过期时间, 关闭浏览器, cookie也不会过期(部分浏览器有关闭浏览器自动删除cookie数据, 会导致需要重新登陆, 可以设置)
         int age = ifRemember ? COOKIE_MAX_AGE : -1;
+        log.info("过期时间是: " + age%60/60);
         set(response, key, value, null, COOKIE_PATH, age, true);
     }
 

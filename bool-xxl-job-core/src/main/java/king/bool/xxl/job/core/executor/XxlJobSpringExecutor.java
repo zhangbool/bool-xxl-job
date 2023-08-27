@@ -20,7 +20,9 @@ import java.util.Map;
  * @desc :
  **/
 @Slf4j
-public class XxlJobSpringExecutor extends XxlJobExecutor implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean {
+public class XxlJobSpringExecutor
+        extends XxlJobExecutor
+        implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean {
 
     // start
     @Override

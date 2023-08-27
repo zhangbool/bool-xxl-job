@@ -74,7 +74,6 @@ public class XxlJobExecutor {
         // init invoker, admin-client
         initAdminBizList(adminAddresses, accessToken);
 
-
         // init JobLogFileCleanThread
         JobLogFileCleanThread.getInstance().start(logRetentionDays);
 
@@ -106,13 +105,11 @@ public class XxlJobExecutor {
         }
         jobHandlerRepository.clear();
 
-
         // destroy JobLogFileCleanThread
         JobLogFileCleanThread.getInstance().toStop();
 
         // destroy TriggerCallbackThread
         TriggerCallbackThread.getInstance().toStop();
-
     }
 
 
@@ -173,7 +170,6 @@ public class XxlJobExecutor {
             }
         }
     }
-
 
     // ---------------------- job handler repository ----------------------
     private static ConcurrentMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<String, IJobHandler>();

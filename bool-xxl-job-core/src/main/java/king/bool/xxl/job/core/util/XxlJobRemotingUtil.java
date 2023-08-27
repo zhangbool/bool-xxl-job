@@ -62,6 +62,7 @@ public class XxlJobRemotingUtil {
 
     /**
      * post
+     * 网络post请求, 直接返回对应模型的数据
      *
      * @param url
      * @param accessToken
@@ -70,7 +71,12 @@ public class XxlJobRemotingUtil {
      * @param returnTargClassOfT
      * @return
      */
-    public static ResultModel postBody(String url, String accessToken, int timeout, Object requestObj, Class returnTargClassOfT) {
+    public static ResultModel postBody(String url,
+                                       String accessToken,
+                                       int timeout,
+                                       Object requestObj,
+                                       Class returnTargClassOfT) {
+
         HttpURLConnection connection = null;
         BufferedReader bufferedReader = null;
         try {

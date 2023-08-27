@@ -232,7 +232,10 @@ public class XxlJobTrigger {
     public static ResultModel runExecutor(TriggerParam triggerParam, String address){
         ResultModel runResult = null;
         try {
+
+            // 这里ExecutorBiz是一个接口, executorBiz实际类是什么呢: ExecutorBizClient
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
+            // 根据不同的触发条件, 根据指定的地址, 发送请求到对应的服务器的不同接口上去
             runResult = executorBiz.run(triggerParam);
         } catch (Exception e) {
             log.error(">>>>>>>>>>> xxl-job trigger error, please check if the executor[{}] is running.", address, e);

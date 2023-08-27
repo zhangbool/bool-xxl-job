@@ -7,7 +7,9 @@ import king.bool.xxl.job.core.util.XxlJobRemotingUtil;
 /**
  * @author : 不二
  * @date : 2023/8/18-08:43
- * @desc : 执行器实现类
+ * @desc : 执行器业务客户端, 主要负责和executor进行通信
+ *         执行器实现类
+ *         根据服务器地址, 发送请求到指定的服务器地址上去
  **/
 public class ExecutorBizClient implements ExecutorBiz {
 
@@ -39,21 +41,21 @@ public class ExecutorBizClient implements ExecutorBiz {
 
     @Override
     public ResultModel idleBeat(IdleBeatParam idleBeatParam) {
-        return null;
+        return XxlJobRemotingUtil.postBody(addressUrl+"idleBeat", accessToken, timeout, idleBeatParam, String.class);
     }
 
     @Override
     public ResultModel run(TriggerParam triggerParam) {
-        return null;
+        return XxlJobRemotingUtil.postBody(addressUrl + "run", accessToken, timeout, triggerParam, String.class);
     }
 
     @Override
     public ResultModel kill(KillParam killParam) {
-        return null;
+        return XxlJobRemotingUtil.postBody(addressUrl + "kill", accessToken, timeout, killParam, String.class);
     }
 
     @Override
     public ResultModel log(LogParam logParam) {
-        return null;
+        return XxlJobRemotingUtil.postBody(addressUrl + "log", accessToken, timeout, logParam, LogResult.class);
     }
 }
