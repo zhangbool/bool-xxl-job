@@ -1,5 +1,6 @@
-package king.bool.xxl.job.core.executor;
+package king.bool.xxl.job.core.executor.impl;
 
+import king.bool.xxl.job.core.executor.XxlJobExecutor;
 import king.bool.xxl.job.core.glue.GlueFactory;
 import king.bool.xxl.job.core.handler.annotation.XxlJob;
 import lombok.extern.slf4j.Slf4j;
@@ -20,8 +21,7 @@ import java.util.Map;
  * @desc :
  **/
 @Slf4j
-public class XxlJobSpringExecutor
-        extends XxlJobExecutor
+public class XxlJobSpringExecutor extends XxlJobExecutor
         implements ApplicationContextAware, SmartInitializingSingleton, DisposableBean {
 
     // start
@@ -31,6 +31,8 @@ public class XxlJobSpringExecutor
         // init JobHandler Repository
         /*initJobHandlerRepository(applicationContext);*/
 
+        // 这里就是判断注解, 如果是XxlJob注解, 则把对应的数据放进并发map中, 后面方便从内存中读取出来进行调用
+        // 上下文可以拿到方法和备注, 从而进行判断是否是XxlJob
         // init JobHandler Repository (for method)
         initJobHandlerMethodRepository(applicationContext);
 
@@ -75,6 +77,7 @@ public class XxlJobSpringExecutor
     }*/
 
     private void initJobHandlerMethodRepository(ApplicationContext applicationContext) {
+
         if (applicationContext == null) {
             return;
         }
@@ -109,6 +112,7 @@ public class XxlJobSpringExecutor
                 continue;
             }
 
+            // 不二
             // generate and regist method job handler
             for (Map.Entry<Method, XxlJob> methodXxlJobEntry : annotatedMethods.entrySet()) {
                 Method executeMethod = methodXxlJobEntry.getKey();

@@ -1,6 +1,7 @@
 package king.bool.xxl.job.admin.core.scheduler;
 
 import king.bool.xxl.job.admin.core.conf.XxlJobAdminConfig;
+import king.bool.xxl.job.admin.core.thread.JobRegistryHelper;
 import king.bool.xxl.job.admin.core.thread.JobScheduleHelper;
 import king.bool.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
@@ -29,7 +30,7 @@ public class XxlJobScheduler {
         JobTriggerPoolHelper.toStart();
 
         // admin registry monitor run
-//        JobRegistryHelper.getInstance().start();
+        JobRegistryHelper.getInstance().start();
 
         // admin fail-monitor run
 //        JobFailMonitorHelper.getInstance().start();

@@ -44,8 +44,9 @@ public class ResultModel {
     public ResultModel() {
     }
 
+    // 这里应该不会掉用了
     public ResultModel(int code, Object data) {
-        this.code = SUCCESS_CODE;
+        this.code = code;
         if (code == 200) {
             this.status = "ok";
             this.msg = "success";
@@ -55,6 +56,12 @@ public class ResultModel {
         }
         this.content = data;
     }
+
+    public ResultModel(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
 
     public int getCode() {
         return code;

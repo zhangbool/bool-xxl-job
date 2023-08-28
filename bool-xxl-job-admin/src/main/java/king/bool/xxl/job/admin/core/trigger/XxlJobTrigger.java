@@ -7,6 +7,7 @@ import king.bool.xxl.job.admin.core.model.XxlJobLog;
 import king.bool.xxl.job.admin.core.route.ExecutorRouteStrategyEnum;
 import king.bool.xxl.job.admin.core.scheduler.XxlJobScheduler;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
+import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.admin.core.util.ThrowableUtil;
 import king.bool.xxl.job.core.biz.ExecutorBiz;
 import king.bool.xxl.job.core.biz.model.ResultModel;
@@ -58,7 +59,7 @@ public class XxlJobTrigger {
             return;
         }
 
-        // 手动传入参数, 则优先使用传入参数而非数据库
+        // 手动传入参数, 则优先使用传入参数而非数据库中参数
         if (executorParam != null) {
             jobInfo.setExecutorParam(executorParam);
         }
@@ -88,10 +89,14 @@ public class XxlJobTrigger {
         if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST==ExecutorRouteStrategyEnum.match(jobInfo.getExecutorRouteStrategy(), null)
                 && group.getRegistryList()!=null && !group.getRegistryList().isEmpty()
                 && shardingParam==null) {
+            log.info(">>>>>>>>>>>>>>> 准备开始调用processTrigger-01 >>>>>>>>>>>>>>> ");
+
             for (int i = 0; i < group.getRegistryList().size(); i++) {
                 processTrigger(group, jobInfo, finalFailRetryCount, triggerType, i, group.getRegistryList().size());
             }
         } else {
+            log.info(">>>>>>>>>>>>>>> 准备开始调用processTrigger-02 >>>>>>>>>>>>>>> ");
+
             if (shardingParam == null) {
                 shardingParam = new int[]{0, 1};
             }
@@ -119,6 +124,8 @@ public class XxlJobTrigger {
      */
     private static void processTrigger(XxlJobGroup group, XxlJobInfo jobInfo, int finalFailRetryCount, TriggerTypeEnum triggerType, int index, int total){
 
+        log.info(">>>>>>>>>>>>>>> processTrigger >>>>>>>>>>>>>>> ");
+
         // param
         // 如果没有找到对应的阻塞策略, 则使用序列化执行
         ExecutorBlockStrategyEnum blockStrategy = ExecutorBlockStrategyEnum
@@ -137,7 +144,7 @@ public class XxlJobTrigger {
         jobLog.setJobId(jobInfo.getId());
         jobLog.setTriggerTime(new Date());
         XxlJobAdminConfig.getAdminConfig().getXxlJobLogDao().save(jobLog);
-        log.debug(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
+        log.info(">>>>>>>>>>> xxl-job trigger start, jobId:{}", jobLog.getId());
 
         // 2、init trigger-param
         TriggerParam triggerParam = new TriggerParam();
@@ -159,6 +166,9 @@ public class XxlJobTrigger {
         String address = null;
         ResultModel routeAddressResult = null;
         if (group.getRegistryList()!=null && !group.getRegistryList().isEmpty()) {
+
+            log.info(">>>>>>>>>>>>>>> init address 01 >>>>>>>>>>>>>>> ");
+
             if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == executorRouteStrategyEnum) {
                 if (index < group.getRegistryList().size()) {
                     address = group.getRegistryList().get(index);
@@ -176,6 +186,8 @@ public class XxlJobTrigger {
                 }
             }
         } else {
+
+            log.info(">>>>>>>>>>>>>>> init address 02 >>>>>>>>>>>>>>> ");
             routeAddressResult = new ResultModel(ResultModel.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
         }
 
@@ -206,8 +218,10 @@ public class XxlJobTrigger {
         triggerMsgSb.append("<br>").append(I18nUtil.getString("jobinfo_field_executorFailRetryCount")).append("：").append(finalFailRetryCount);
 
         triggerMsgSb.append("<br><br><span style=\"color:#00c0ef;\" > >>>>>>>>>>>"+ I18nUtil.getString("jobconf_trigger_run") +"<<<<<<<<<<< </span><br>")
-                .append((routeAddressResult!=null&&routeAddressResult.getMsg()!=null)?routeAddressResult.getMsg()+"<br><br>":"").append(triggerResult.getMsg()!=null?triggerResult.getMsg():"");
+                .append((routeAddressResult!=null&&routeAddressResult.getMsg()!=null)?routeAddressResult.getMsg()+"<br><br>":"")
+                .append(triggerResult.getMsg()!=null?triggerResult.getMsg():"");
 
+        log.info("triggerMsgSb是: " + JacksonUtil.writeValueAsString(triggerMsgSb));
 
         // 6、save log trigger-info
         jobLog.setExecutorAddress(address);
@@ -232,6 +246,9 @@ public class XxlJobTrigger {
     public static ResultModel runExecutor(TriggerParam triggerParam, String address){
         ResultModel runResult = null;
         try {
+
+            log.info(">>>>>>>>>>>>>>> runExecutor >>>>>>>>>>>>>>> ");
+
 
             // 这里ExecutorBiz是一个接口, executorBiz实际类是什么呢: ExecutorBizClient
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);

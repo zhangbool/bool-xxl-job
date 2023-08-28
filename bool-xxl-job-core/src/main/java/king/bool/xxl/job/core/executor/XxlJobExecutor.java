@@ -114,8 +114,10 @@ public class XxlJobExecutor {
 
 
     // ---------------------- admin-client (rpc invoker) ----------------------
+    // 无非是把地址和token放进一个列表中去
     private static List<AdminBiz> adminBizList;
-    private void initAdminBizList(String adminAddresses, String accessToken) throws Exception {
+
+    private void initAdminBizList(String adminAddresses, String accessToken) {
         if (adminAddresses!=null && adminAddresses.trim().length()>0) {
             for (String address: adminAddresses.trim().split(",")) {
                 if (address!=null && address.trim().length()>0) {
@@ -141,12 +143,14 @@ public class XxlJobExecutor {
     private void initEmbedServer(String address, String ip, int port, String appname, String accessToken) throws Exception {
 
         // fill ip port
-        port = port>0?port: NetUtil.findAvailablePort(9999);
-        ip = (ip!=null&&ip.trim().length()>0)?ip: IpUtil.getIp();
+        port = port>0 ? port : NetUtil.findAvailablePort(9999);
+        ip = (ip != null && ip.trim().length() > 0) ? ip : IpUtil.getIp();
 
+        // 如果adress没有传, 则用ip:9999
         // generate address
         if (address==null || address.trim().length()==0) {
-            String ip_port_address = IpUtil.getIpPort(ip, port);   // registry-address：default use address to registry , otherwise use ip:port if address is null
+            // registry-address：default use address to registry , otherwise use ip:port if address is null
+            String ip_port_address = IpUtil.getIpPort(ip, port);
             address = "http://{ip_port}/".replace("{ip_port}", ip_port_address);
         }
 
@@ -155,7 +159,9 @@ public class XxlJobExecutor {
             log.warn(">>>>>>>>>>> xxl-job accessToken is empty. To ensure system security, please set the accessToken.");
         }
 
+
         // start
+        // 如果地址给定, 就用给定地址, 如果地址未给, 就用ip地址
         embedServer = new EmbedServer();
         embedServer.start(address, port, appname, accessToken);
     }
@@ -172,6 +178,7 @@ public class XxlJobExecutor {
     }
 
     // ---------------------- job handler repository ----------------------
+    // 这里其实就是拿到job, 就放进map里而已
     private static ConcurrentMap<String, IJobHandler> jobHandlerRepository = new ConcurrentHashMap<String, IJobHandler>();
     public static IJobHandler loadJobHandler(String name){
         return jobHandlerRepository.get(name);
@@ -180,7 +187,6 @@ public class XxlJobExecutor {
         log.info(">>>>>>>>>>> xxl-job register jobhandler success, name:{}, jobHandler:{}", name, jobHandler);
         return jobHandlerRepository.put(name, jobHandler);
     }
-
     // #todo: XxlJob注解做参数?????这什么语法
     protected void registJobHandler(XxlJob xxlJob, Object bean, Method executeMethod){
         if (xxlJob == null) {
@@ -238,7 +244,9 @@ public class XxlJobExecutor {
 
     // ---------------------- job thread repository ----------------------
     private static ConcurrentMap<Integer, JobThread> jobThreadRepository = new ConcurrentHashMap<Integer, JobThread>();
+
     public static JobThread registJobThread(int jobId, IJobHandler handler, String removeOldReason){
+
         JobThread newJobThread = new JobThread(jobId, handler);
         newJobThread.start();
         log.info(">>>>>>>>>>> xxl-job regist JobThread success, jobId:{}, handler:{}", new Object[]{jobId, handler});

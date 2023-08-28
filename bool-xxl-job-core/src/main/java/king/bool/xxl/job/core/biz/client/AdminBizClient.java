@@ -5,6 +5,7 @@ import king.bool.xxl.job.core.biz.model.HandleCallbackParam;
 import king.bool.xxl.job.core.biz.model.RegistryParam;
 import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.util.XxlJobRemotingUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @desc : 管理员业务客户端
  *         主要负责:
  **/
+@Slf4j
 public class AdminBizClient implements AdminBiz {
 
     private String addressUrl ;
@@ -40,6 +42,7 @@ public class AdminBizClient implements AdminBiz {
 
     @Override
     public ResultModel registry(RegistryParam registryParam) {
+        log.info("需要连接注册的地址是: {}, 参数是:{}", addressUrl, registryParam);
         return XxlJobRemotingUtil.postBody(addressUrl + "api/registry", accessToken, timeout, registryParam, String.class);
     }
 

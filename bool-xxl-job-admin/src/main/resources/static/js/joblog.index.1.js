@@ -145,7 +145,8 @@ $(function() {
                         "width":'10%',
 						"render": function ( data, type, row ) {
 							console.log("triggerMsg: "+ JSON.stringify(data))
-							return data?'<a class="logTips" href="javascript:;" >'+ I18n.system_show +'<span style="display:none;">'+ data +'</span></a>':I18n.system_empty;
+							// return data ? '<a class="logTips" href="javascript:;" >'+ I18n.system_show + 'DDDD' +'<span style="display:none;">'+ data +'</span></a>' : I18n.system_empty;
+							return '<a class="logTips" href="javascript:;" >'+ I18n.system_show + 'DDDD' +'<span style="display:none;">'+ data +'</span></a>';
 						}
 					},
 	                {
@@ -255,7 +256,9 @@ $(function() {
 
 	// logTips alert
 	$('#joblog_list').on('click', '.logTips', function(){
+		console.log("点击点击了!!!!!")
 		var msg = $(this).find('span').html();
+		// console.log("msg是是:" + JSON.stringify(msg));
 		ComAlertTec.show(msg);
 	});
 
@@ -364,15 +367,17 @@ $(function() {
 });
 
 
+// 写的好麻烦,,,,,,完全没必要.
 // Com Alert by Tec theme
 var ComAlertTec = {
+
 	html:function(){
 		var html =
 			'<div class="modal fade" id="ComAlertTec" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
-			'	<div class="modal-dialog modal-lg-">' +
-			'		<div class="modal-content-tec">' +
-			'			<div class="modal-body">' +
-			'				<div class="alert" style="color:#fff;word-wrap: break-word;">' +
+			'	<div class="modal-dialog modal-dialog-centered">' +
+			'		<div class="modal-content">' +
+			'			<div class="modal-body" id="zhang">' +
+			'				<div class="alert" style="color:#00c0ef;word-wrap: break-word; opacity: 100">' +
 			'				</div>' +
 			'			</div>' +
 			'				<div class="modal-footer">' +
@@ -385,16 +390,24 @@ var ComAlertTec = {
 			'</div>';
 		return html;
 	},
+
 	show:function(msg, callback){
+
+		console.log("zhang--------01---------" + JSON.stringify(msg));
+
 		// dom init
 		if ($('#ComAlertTec').length == 0){
+			console.log("------------8888-----------" + JSON.stringify(ComAlertTec.html()));
+			// 调用上面的方法
 			$('body').append(ComAlertTec.html());
 		}
 
 		// init com alert
 		$('#ComAlertTec .alert').html(msg);
+		// $('#zhang').text(msg);
 		$('#ComAlertTec').modal('show');
 
+		// #todo: 这里是干啥的
 		$('#ComAlertTec .ok').click(function(){
 			$('#ComAlertTec').modal('hide');
 			if(typeof callback == 'function') {

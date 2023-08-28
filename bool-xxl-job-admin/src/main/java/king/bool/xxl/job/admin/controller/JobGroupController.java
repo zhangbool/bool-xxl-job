@@ -107,6 +107,8 @@ public class JobGroupController {
         // process
         xxlJobGroup.setUpdateTime(new Date());
 
+        log.info("获取执行组: " + JacksonUtil.writeValueAsString(xxlJobGroup));
+
         int ret = xxlJobGroupDao.save(xxlJobGroup);
         return (ret>0)? ResultModel.SUCCESS : ResultModel.FAIL;
     }

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  * @desc :
  **/
 // #todo 这里日志怎么处理???
-//@Slf4j
+@Slf4j
 public class IpUtil {
 
     private static final String ANYHOST_VALUE = "0.0.0.0";
@@ -170,7 +170,10 @@ public class IpUtil {
      * @return String
      */
     public static String getIp(){
-        return getLocalAddress().getHostAddress();
+        String ipAddr = getLocalAddress().getHostAddress();
+        log.info("ipAddr地址是: " + ipAddr);
+
+        return ipAddr;
     }
 
     /**

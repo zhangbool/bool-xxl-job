@@ -128,6 +128,8 @@ public class JobLogController {
         maps.put("recordsTotal", list_count);		// 总记录数
         maps.put("recordsFiltered", list_count);	// 过滤后的总记录数
         maps.put("data", list);  					// 分页列表
+
+        log.info("获取到的joglog数据是:" + JacksonUtil.writeValueAsString(maps));
         return maps;
     }
 

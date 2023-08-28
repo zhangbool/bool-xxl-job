@@ -1,6 +1,6 @@
 package king.bool.xxl.job.core.glue.impl;
 
-import king.bool.xxl.job.core.executor.XxlJobSpringExecutor;
+import king.bool.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import king.bool.xxl.job.core.glue.GlueFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

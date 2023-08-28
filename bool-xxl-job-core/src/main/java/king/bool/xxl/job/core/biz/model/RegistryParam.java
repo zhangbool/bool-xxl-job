@@ -17,6 +17,7 @@ public class RegistryParam {
     private String registryValue;
 
     public RegistryParam(){}
+
     public RegistryParam(String registryGroup, String registryKey, String registryValue) {
         this.registryGroup = registryGroup;
         this.registryKey = registryKey;

@@ -40,10 +40,30 @@ $(function () {
         "columns": [
             { "data": 'no', "visible" : true, "width":'20%'},
             { "data": 'name', "visible" : true, "width":'20%' },
-            { "data": 'age', "visible" : true, "width":'20%'}
+            {
+                "data": 'age',
+                "visible" : true,
+                "width":'20%',
+                "render": function ( data, type, row ) {
+                    return '<a class="logTips" href="javascript:;">'+ '显示年龄' +'<span style="display:none;">'+ data +'</span></a>';
+                }
+            }
         ]
-
     })
+
+
+    // logTips alert
+    $('#students').on('click', '.logTips', function(){
+        console.log("点击点击了!!!!!")
+        //  这里创建一个modal框,方便进行数据显示
+        // $('#myModal').modal('show')
+
+        var msg = $(this).find('span').html();
+        console.log("获取的年纪是:" + JSON.stringify(msg));
+        // 这个是对象赋值
+        $('#age').text(msg);
+        $('#myModal').modal('show');
+    });
 
 
 });

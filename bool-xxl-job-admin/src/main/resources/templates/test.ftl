@@ -18,9 +18,6 @@
 
 <div id="zhang">zhang</div>
 
-
-
-
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
@@ -31,7 +28,7 @@
                     <tr>
                         <th name="no">no</th>
                         <th name="name">name</th>
-                        <th name="age">age</th>
+                        <th name="age"></th>
                     </tr>
                     </thead>
                     <tbody></tbody>
@@ -42,13 +39,32 @@
 </div>
 
 
+
+
+
 <@netCommon.commonScript />
-<script src="${request.contextPath}/static/adminlte/bower_components/jquery/jquery.min.js"></script>
-<script src="${request.contextPath}/static/plugins/jquery/jquery.validate.min.js"></script>
 <script src="${request.contextPath}/static/adminlte/bower_components/datatables.net/js/jquery.dataTables.min.js"></script>
 
 <script src="${request.contextPath}/static/js/test.js"></script>
 
+
+
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">模态框（Modal）标题</h4>
+            </div>
+            <div class="modal-body" id="age">这里添加一些文本</div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button type="button" class="btn btn-primary">提交更改</button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
 </body>
 
 

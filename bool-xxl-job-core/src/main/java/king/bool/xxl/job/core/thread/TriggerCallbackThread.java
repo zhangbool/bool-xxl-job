@@ -26,7 +26,9 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 public class TriggerCallbackThread {
+
     private static TriggerCallbackThread instance = new TriggerCallbackThread();
+
     public static TriggerCallbackThread getInstance(){
         return instance;
     }
@@ -47,7 +49,6 @@ public class TriggerCallbackThread {
     private Thread triggerRetryCallbackThread;
     private volatile boolean toStop = false;
     public void start() {
-
         // valid
         if (XxlJobExecutor.getAdminBizList() == null) {
             log.warn(">>>>>>>>>>> xxl-job, executor callback config fail, adminAddresses is null.");
@@ -56,7 +57,6 @@ public class TriggerCallbackThread {
 
         // callback
         triggerCallbackThread = new Thread(new Runnable() {
-
             @Override
             public void run() {
 
@@ -104,7 +104,7 @@ public class TriggerCallbackThread {
         triggerCallbackThread.start();
 
 
-        // retry
+        // retry, 定时注册线程
         triggerRetryCallbackThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -115,8 +115,9 @@ public class TriggerCallbackThread {
                         if (!toStop) {
                             log.error(e.getMessage(), e);
                         }
-
                     }
+
+                    // 这里休眠, 每隔RegistryConfig.BEAT_TIMEOUT时间就去admin注册一次
                     try {
                         TimeUnit.SECONDS.sleep(RegistryConfig.BEAT_TIMEOUT);
                     } catch (InterruptedException e) {
@@ -128,6 +129,7 @@ public class TriggerCallbackThread {
                 log.info(">>>>>>>>>>> xxl-job, executor retry callback thread destroy.");
             }
         });
+        // 守护线程, 如果其他main等主线程死掉了, 这里也会死掉
         triggerRetryCallbackThread.setDaemon(true);
         triggerRetryCallbackThread.start();
 

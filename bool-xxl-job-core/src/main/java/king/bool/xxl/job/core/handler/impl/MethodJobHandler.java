@@ -7,7 +7,8 @@ import java.lang.reflect.Method;
 /**
  * @author : 不二
  * @date : 2023/8/24-14:22
- * @desc :
+ * @desc : 方法的执行器, 启动的时候, 先根据注解, 把对应的XxlJob注解的方法获取出来, 封装成MethodJobHandler,
+ *          存入(注册)到内存中的ConcurrentMap中, 方便后续取出来进行处理
  **/
 public class MethodJobHandler extends IJobHandler {
 

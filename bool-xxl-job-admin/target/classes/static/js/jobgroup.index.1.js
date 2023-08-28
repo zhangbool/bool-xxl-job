@@ -244,7 +244,7 @@ $(function() {
 					layer.open({
 						title: I18n.system_tips,
                         btn: [ I18n.system_ok ],
-						content: (data.msg || I18n.system_add_fail  ),
+						content: (data.msg || I18n.system_add_fail),
 						icon: '2'
 					});
 				}
@@ -355,5 +355,5 @@ $(function() {
 		$("#updateModal .form .form-group").removeClass("has-error");
 	});
 
-	
+
 });

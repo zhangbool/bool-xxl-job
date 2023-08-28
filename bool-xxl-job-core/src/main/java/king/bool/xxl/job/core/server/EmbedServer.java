@@ -36,13 +36,19 @@ public class EmbedServer {
     private Thread thread;
 
     public void start(final String address, final int port, final String appname, final String accessToken) {
+
         executorBiz = new ExecutorBizImpl();
+
+        // 启动一个线程, 跑内嵌的服务器, 这个服务器是使用netty来做的
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 // param
                 EventLoopGroup bossGroup = new NioEventLoopGroup();
                 EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+                // #todo-01: 这个地方应该只需要调用一次启动个内嵌的服务器吧, 可以不用线程池吗
+                // 这个线程池是给内置服务器中的调度任务用的, 而不是用来创建服务器的
                 ThreadPoolExecutor bizThreadPool = new ThreadPoolExecutor(
                         0,
                         200,
@@ -61,7 +67,9 @@ public class EmbedServer {
                                 throw new RuntimeException("xxl-job, EmbedServer bizThreadPool is EXHAUSTED!");
                             }
                         });
+
                 try {
+
                     // start server
                     ServerBootstrap bootstrap = new ServerBootstrap();
                     bootstrap.group(bossGroup, workerGroup)
@@ -69,13 +77,19 @@ public class EmbedServer {
                             .childHandler(new ChannelInitializer<SocketChannel>() {
                                 @Override
                                 public void initChannel(SocketChannel channel) throws Exception {
+                                    log.info("服务器启动中.........");
                                     channel.pipeline()
-                                            .addLast(new IdleStateHandler(0, 0, 30 * 3, TimeUnit.SECONDS))  // beat 3N, close if idle
+                                            // #todo-1: 这些都是干啥的干啥的???
+                                            // beat 3N, close if idle
+                                            .addLast(new IdleStateHandler(0, 0, 30 * 3, TimeUnit.SECONDS))
                                             .addLast(new HttpServerCodec())
-                                            .addLast(new HttpObjectAggregator(5 * 1024 * 1024))  // merge request & reponse to FULL
+                                            // merge request & reponse to FULL
+                                            .addLast(new HttpObjectAggregator(5 * 1024 * 1024))
+                                            // 在这里创建内置服务器类
                                             .addLast((ChannelHandler) new EmbedHttpServerHandler(executorBiz, accessToken, bizThreadPool));
                                 }
                             })
+                            //开启TCP底层心跳机制
                             .childOption(ChannelOption.SO_KEEPALIVE, true);
 
                     // bind
@@ -83,6 +97,10 @@ public class EmbedServer {
 
                     log.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
 
+
+                    // 服务器创建好了, 就可以像admin进行注册了, 因为注册的时候需要内嵌服务器的地址
+                    // 这个是自动注册, 然后同时在:
+                    // 这里进行注册吗???
                     // start registry
                     startRegistry(appname, address);
 
@@ -104,7 +122,11 @@ public class EmbedServer {
                 }
             }
         });
-        thread.setDaemon(true);    // daemon, service jvm, user thread leave >>> daemon leave >>> jvm leave
+
+        // 守护线程, 守护用户线程, 比如说main线程或者自己建立的其他用户线程(非demo线程)
+        // 如果应用中没有来其他的用户线程, 即应用中的所有线程都是守护线程, 这个就会被终止掉, 单纯的守护线程不会存在
+        // daemon, service jvm, user thread leave >>> daemon leave >>> jvm leave
+        thread.setDaemon(true);
         thread.start();
     }
 
@@ -130,6 +152,7 @@ public class EmbedServer {
      * @author xuxueli 2015-11-24 22:25:15
      */
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+
         private static final Logger logger = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
 
         private ExecutorBiz executorBiz;
@@ -245,8 +268,9 @@ public class EmbedServer {
     }
 
     // ---------------------- registry ----------------------
-
     public void startRegistry(final String appname, final String address) {
+        log.info("startRegistry开始注册咯-------{}-{}", appname, address);
+
         // start registry
         ExecutorRegistryThread.getInstance().start(appname, address);
     }

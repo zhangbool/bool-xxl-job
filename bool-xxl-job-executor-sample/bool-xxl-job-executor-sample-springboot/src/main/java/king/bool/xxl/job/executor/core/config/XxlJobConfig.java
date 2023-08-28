@@ -1,6 +1,6 @@
 package king.bool.xxl.job.executor.core.config;
 
-import king.bool.xxl.job.core.executor.XxlJobSpringExecutor;
+import king.bool.xxl.job.core.executor.impl.XxlJobSpringExecutor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -40,6 +40,7 @@ public class XxlJobConfig {
     private int logRetentionDays;
 
 
+    // 在这里启动执行期相关配置
     @Bean
     public XxlJobSpringExecutor xxlJobExecutor() {
         log.info(">>>>>>>>>>> xxl-job config init.");
