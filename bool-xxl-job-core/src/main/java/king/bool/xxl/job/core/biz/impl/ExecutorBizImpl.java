@@ -46,6 +46,9 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
     @Override
     public ResultModel run(TriggerParam triggerParam) {
+
+        log.info("----开始执行---run------");
+
         // load old：jobHandler + jobThread
         JobThread jobThread = XxlJobExecutor.loadJobThread(triggerParam.getJobId());
         IJobHandler jobHandler = jobThread!=null?jobThread.getHandler():null;

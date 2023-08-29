@@ -176,17 +176,21 @@ public class XxlJobTrigger {
                     address = group.getRegistryList().get(0);
                 }
             } else {
+                log.info("路由参数是: {}--{}",
+                        JacksonUtil.writeValueAsString(triggerParam),
+                        JacksonUtil.writeValueAsString(group.getRegistryList()));
+
                 // route就是获取实际的策略得出的ResultModel, ResultModel的content应该是String类型
                 routeAddressResult = executorRouteStrategyEnum.getRouter().route(triggerParam, group.getRegistryList());
                 if (routeAddressResult.getCode() == ResultModel.SUCCESS_CODE) {
+                    log.info("获取到的routeAddressResult是: " + JacksonUtil.writeValueAsString(routeAddressResult));
                     // #todo: 这里我content不是string
                     // 表面上是Obj, 实际上是String类型, 直接toString应该是没啥问题的
-                    address = routeAddressResult.getContent().toString();
+                    address = routeAddressResult.getContentString();
                     log.info("---------------------> 路由成功, 最后的结果是: {} <---------------------",  address);
                 }
             }
         } else {
-
             log.info(">>>>>>>>>>>>>>> init address 02 >>>>>>>>>>>>>>> ");
             routeAddressResult = new ResultModel(ResultModel.FAIL_CODE, I18nUtil.getString("jobconf_trigger_address_empty"));
         }
@@ -246,12 +250,10 @@ public class XxlJobTrigger {
     public static ResultModel runExecutor(TriggerParam triggerParam, String address){
         ResultModel runResult = null;
         try {
-
             log.info(">>>>>>>>>>>>>>> runExecutor >>>>>>>>>>>>>>> ");
-
-
-            // 这里ExecutorBiz是一个接口, executorBiz实际类是什么呢: ExecutorBizClient
+            // 这里ExecutorBiz是一个接口, executorBiz实际类是什么呢: ExecutorBizClient, 错了, 不是ExecutorBizClient, 而是:ExecutorBizImpl
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
+
             // 根据不同的触发条件, 根据指定的地址, 发送请求到对应的服务器的不同接口上去
             runResult = executorBiz.run(triggerParam);
         } catch (Exception e) {

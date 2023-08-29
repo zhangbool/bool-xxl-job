@@ -5,6 +5,7 @@ import king.bool.xxl.job.admin.core.thread.JobRegistryHelper;
 import king.bool.xxl.job.admin.core.thread.JobScheduleHelper;
 import king.bool.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
+import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.core.biz.ExecutorBiz;
 import king.bool.xxl.job.core.biz.client.ExecutorBizClient;
 import king.bool.xxl.job.core.enums.ExecutorBlockStrategyEnum;
@@ -86,7 +87,6 @@ public class XxlJobScheduler {
     // ---------------------- executor-client ----------------------
     private static ConcurrentMap<String, ExecutorBiz> executorBizRepository = new ConcurrentHashMap<String, ExecutorBiz>();
     public static ExecutorBiz getExecutorBiz(String address) {
-
         // valid
         if (address==null || address.trim().length()==0) {
             return null;
@@ -106,6 +106,9 @@ public class XxlJobScheduler {
         executorBiz = new ExecutorBizClient(address, XxlJobAdminConfig.getAdminConfig().getAccessToken());
         // 创建好对象, 放入内存map中
         executorBizRepository.put(address, executorBiz);
+
+        // #todo: 这里是null
+        log.info("获取executorBiz: {}", JacksonUtil.writeValueAsString(executorBiz));
         return executorBiz;
     }
 

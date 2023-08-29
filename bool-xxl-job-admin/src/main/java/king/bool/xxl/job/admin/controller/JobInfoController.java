@@ -146,11 +146,13 @@ public class JobInfoController {
     @ResponseBody
     //@PermissionLimit(limit = false)
     public ResultModel triggerJob(int id, String executorParam, String addressList) {
+
+        log.info("开始调用trigger函数: {}, {}, {}", id, executorParam, addressList);
+
         // force cover job param
         if (executorParam == null) {
             executorParam = "";
         }
-
 
         // #todo: 这里先不处理
         // 这里是执行job,包括: 执行一次, 查询日志, 注册节点, 下次执行时间等....

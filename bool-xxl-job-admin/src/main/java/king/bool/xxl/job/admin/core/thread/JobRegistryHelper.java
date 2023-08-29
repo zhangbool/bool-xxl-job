@@ -3,6 +3,7 @@ package king.bool.xxl.job.admin.core.thread;
 import king.bool.xxl.job.admin.core.conf.XxlJobAdminConfig;
 import king.bool.xxl.job.admin.core.model.XxlJobGroup;
 import king.bool.xxl.job.admin.core.model.XxlJobRegistry;
+import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.core.biz.model.RegistryParam;
 import king.bool.xxl.job.core.biz.model.ResultModel;
 import king.bool.xxl.job.core.enums.RegistryConfig;
@@ -71,8 +72,12 @@ public class JobRegistryHelper {
                         List<XxlJobGroup> groupList = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().findByAddressType(0);
                         if (groupList!=null && !groupList.isEmpty()) {
                             // remove dead address (admin/executor)
+                            log.info("当前数据是: ----- {}-{}", RegistryConfig.DEAD_TIMEOUT, new Date());
+
+                            // 找到死掉的注册信息
                             List<Integer> ids = XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().findDead(RegistryConfig.DEAD_TIMEOUT, new Date());
                             if (ids!=null && ids.size()>0) {
+                                // 如果有, 就删除相关数据
                                 XxlJobAdminConfig.getAdminConfig().getXxlJobRegistryDao().removeDead(ids);
                             }
 
@@ -98,6 +103,8 @@ public class JobRegistryHelper {
 
                             // fresh group address
                             for (XxlJobGroup group: groupList) {
+                                log.info("当前的XxlJobGroup是: {}", JacksonUtil.writeValueAsString(group));
+
                                 List<String> registryList = appAddressMap.get(group.getAppname());
                                 String addressListStr = null;
                                 if (registryList!=null && !registryList.isEmpty()) {
@@ -145,6 +152,7 @@ public class JobRegistryHelper {
         // stop monitir (interrupt and wait)
         registryMonitorThread.interrupt();
         try {
+            // #todo: 这么高级的吗, 这里后续需要看下join方法已经忘记了
             registryMonitorThread.join();
         } catch (InterruptedException e) {
             log.error(e.getMessage(), e);

@@ -266,8 +266,12 @@ $(function() {
 		});
 	});
 
+	// 这里就是执行一次
     // job trigger
     $("#job_list").on('click', '.job_trigger',function() {
+
+		console.log("点击了操作下拉框～～～～")
+
         var id = $(this).parents('ul').attr("_id");
         var row = tableData['key'+id];
 
@@ -278,6 +282,8 @@ $(function() {
     });
 
 
+	// 如果点击了执行一次, 就弹出一个modal框, 方便输入参数啥的
+	// 如果点击了modal框的确认, 就会调用这里的click函数方法
     $("#jobTriggerModal .ok").on('click',function() {
         $.ajax({
             type : 'POST',

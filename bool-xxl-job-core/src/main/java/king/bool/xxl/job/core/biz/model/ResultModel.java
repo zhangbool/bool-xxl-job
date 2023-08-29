@@ -57,6 +57,12 @@ public class ResultModel {
         this.content = data;
     }
 
+    public ResultModel(int code, Object content, String msg) {
+        this.content = content;
+        this.code = code;
+        this.msg = msg;
+    }
+
     public ResultModel(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -69,5 +75,9 @@ public class ResultModel {
 
     public Object getContent() {
         return content;
+    }
+
+    public String getContentString() {
+        return (String) (content == null ? "" : content);
     }
 }
