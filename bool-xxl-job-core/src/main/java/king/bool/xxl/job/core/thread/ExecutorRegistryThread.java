@@ -46,6 +46,7 @@ public class ExecutorRegistryThread {
                     try {
                         RegistryParam registryParam = new RegistryParam(RegistryConfig.RegistType.EXECUTOR.name(), appname, address);
                         // 这里遍历主admin列表,
+                        // 这里adminBiz是AdminBizClient
                         for (AdminBiz adminBiz: XxlJobExecutor.getAdminBizList()) {
                             log.info("遍历AdminBiz, 当前是: {}", adminBiz);
                             try {

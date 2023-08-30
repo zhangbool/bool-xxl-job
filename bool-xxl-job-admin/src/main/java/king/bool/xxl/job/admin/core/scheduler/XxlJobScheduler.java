@@ -108,7 +108,7 @@ public class XxlJobScheduler {
         executorBizRepository.put(address, executorBiz);
 
         // #todo: 这里是null
-        log.info("获取executorBiz: {}", JacksonUtil.writeValueAsString(executorBiz));
+        log.info("获取executorBiz: {}", executorBiz);
         return executorBiz;
     }
 

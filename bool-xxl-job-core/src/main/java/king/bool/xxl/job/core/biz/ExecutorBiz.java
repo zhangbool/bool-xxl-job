@@ -4,8 +4,15 @@ package king.bool.xxl.job.core.biz;
 import king.bool.xxl.job.core.biz.model.*;
 
 /**
- * Created by xuxueli on 17/3/1.
- */
+ * @author : 不二
+ * @date : 2023/8/24-13:56
+ * @desc : 业务逻辑代码, 有两个实现类:
+ *
+ *          ExecutorBizImpl:   admin中用
+ *          ExecutorBizClient: 客户端中用
+ *
+ *
+ **/
 public interface ExecutorBiz {
 
     /**

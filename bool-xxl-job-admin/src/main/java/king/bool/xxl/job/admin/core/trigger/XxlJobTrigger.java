@@ -63,8 +63,7 @@ public class XxlJobTrigger {
         if (executorParam != null) {
             jobInfo.setExecutorParam(executorParam);
         }
-
-        int finalFailRetryCount = failRetryCount>=0?failRetryCount:jobInfo.getExecutorFailRetryCount();
+        int finalFailRetryCount = failRetryCount >= 0 ? failRetryCount : jobInfo.getExecutorFailRetryCount();
         XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(jobInfo.getJobGroup());
 
         // cover addressList
@@ -161,14 +160,12 @@ public class XxlJobTrigger {
         triggerParam.setBroadcastIndex(index);
         triggerParam.setBroadcastTotal(total);
 
-
         // 3、init address
         String address = null;
         ResultModel routeAddressResult = null;
         if (group.getRegistryList()!=null && !group.getRegistryList().isEmpty()) {
 
             log.info(">>>>>>>>>>>>>>> init address 01 >>>>>>>>>>>>>>> ");
-
             if (ExecutorRouteStrategyEnum.SHARDING_BROADCAST == executorRouteStrategyEnum) {
                 if (index < group.getRegistryList().size()) {
                     address = group.getRegistryList().get(index);
@@ -253,6 +250,7 @@ public class XxlJobTrigger {
             log.info(">>>>>>>>>>>>>>> runExecutor >>>>>>>>>>>>>>> ");
             // 这里ExecutorBiz是一个接口, executorBiz实际类是什么呢: ExecutorBizClient, 错了, 不是ExecutorBizClient, 而是:ExecutorBizImpl
             ExecutorBiz executorBiz = XxlJobScheduler.getExecutorBiz(address);
+            log.info(">>>>>>>>>>>>>>> runExecutor >>>>>>>>>>>>>>> {}", executorBiz);
 
             // 根据不同的触发条件, 根据指定的地址, 发送请求到对应的服务器的不同接口上去
             runResult = executorBiz.run(triggerParam);

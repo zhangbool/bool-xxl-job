@@ -66,7 +66,6 @@ public class JobTriggerPoolHelper {
         log.info(">>>>>>>>> xxl-job trigger thread pool shutdown success.");
     }
 
-
     // job timeout count
     // #todo: volatile的作用是啥来着???
     private volatile long minTim = System.currentTimeMillis()/60000;     // ms > min
@@ -85,21 +84,22 @@ public class JobTriggerPoolHelper {
 
         // choose thread pool
         ThreadPoolExecutor triggerPool_ = fastTriggerPool;
-
         // 每个job对应一个数据, 某个job请求过来, 取出这个job相关数据
         AtomicInteger jobTimeoutCount = jobTimeoutCountMap.get(jobId);
 
         // 如果在清空之前, 也就是在一分钟之内, 有超过10次超时, 则添加到慢任务的线程池中去
         // 如果一个job在1分钟內超时次数10次, 则认为是慢任务
-        if (jobTimeoutCount!=null && jobTimeoutCount.get() > 10) {      // job-timeout 10 times in 1 min
+        // job-timeout 10 times in 1 min
+        if (jobTimeoutCount!=null && jobTimeoutCount.get() > 10) {
             triggerPool_ = slowTriggerPool;
         }
 
         // trigger
         triggerPool_.execute(new Runnable() {
-
             @Override
             public void run() {
+
+                log.info("----------------开始触发任务了----------------");
                 // 注意: 这个是在子线程里面走的
                 long start = System.currentTimeMillis();
 
@@ -111,11 +111,19 @@ public class JobTriggerPoolHelper {
                     log.error(e.getMessage(), e);
                 } finally {
 
+                    // 这里是执行完毕或者异常的时候才会走到这里
+                    // #todo: 这里是不是有问题::: 如下:::
+                    // 假设说 job_id=1 的任务在每隔1s执行一次, 这些jobs都是在不同的线程中的
+                    // 但是每隔线程都是隔1min清空一次的话, 这些jobs时间是分布在不同时间点的
+                    // jobTimeoutCountMap岂不是会在一分钟內清空很多次???
+                    // 哦哦哦哦, 不对, 这里是有时间判断的, 如果跟上次清空的时间差不是1分钟
                     // check timeout-count-map
                     long minTim_now = System.currentTimeMillis()/60000;
                     // #todo: 这里是什么东西??? 为啥要判断两个不相等???
                     // 我大概知道是什么意思了, 每分钟清空一次
+                    // 这里判断是不是还是同一分钟, 如果不是同一分钟, 就清空数据
                     if (minTim != minTim_now) {
+                        log.info("～～～～～～～～～～～～～～～～开启清空开始清空开始清空～～～～～～～～～～～～～～～～");
                         minTim = minTim_now;
                         // jobTimeoutCountMap是主线程创建的, 在子线程中操作,
                         // 所以会有多线程问题, 需要用ConcurrentHashMap
@@ -123,9 +131,11 @@ public class JobTriggerPoolHelper {
                     }
 
                     // 慢任务统计, 这里是在子线程中进行统计的
+                    // 超过500ms的是慢查询, 如果本次任务超过500ms, 则增加1, 并添加到本分钟的map计数
                     // incr timeout-count-map
                     long cost = System.currentTimeMillis()-start;
-                    if (cost > 500) {       // ob-timeout threshold 500ms
+                    // ob-timeout threshold 500ms
+                    if (cost > 500) {
                         AtomicInteger timeoutCount = jobTimeoutCountMap.putIfAbsent(jobId, new AtomicInteger(1));
                         if (timeoutCount != null) {
                             timeoutCount.incrementAndGet();
@@ -150,6 +160,10 @@ public class JobTriggerPoolHelper {
     }
 
     /**
+     *
+     * 触发job的通用方法
+     * 在页面job任务中, 操作里面点击执行一次, 也会调用到这里
+     *
      * @param jobId
      * @param triggerType
      * @param failRetryCount

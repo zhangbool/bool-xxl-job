@@ -18,7 +18,7 @@ import java.util.Date;
 /**
  * @author : 不二
  * @date : 2023/8/24-11:27
- * @desc :
+ * @desc : executor客户端的执行代码
  **/
 @Slf4j
 public class ExecutorBizImpl implements ExecutorBiz {
@@ -48,7 +48,6 @@ public class ExecutorBizImpl implements ExecutorBiz {
     public ResultModel run(TriggerParam triggerParam) {
 
         log.info("----开始执行---run------");
-
         // load old：jobHandler + jobThread
         JobThread jobThread = XxlJobExecutor.loadJobThread(triggerParam.getJobId());
         IJobHandler jobHandler = jobThread!=null?jobThread.getHandler():null;

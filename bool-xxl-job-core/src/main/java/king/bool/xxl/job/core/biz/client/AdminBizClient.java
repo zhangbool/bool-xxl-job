@@ -14,6 +14,7 @@ import java.util.List;
  * @date : 2023/8/24-14:06
  * @desc : 管理员业务客户端
  *         主要负责:
+ *          executor中用
  **/
 @Slf4j
 public class AdminBizClient implements AdminBiz {

@@ -146,6 +146,7 @@ public class XxlJobExecutor {
         port = port>0 ? port : NetUtil.findAvailablePort(9999);
         ip = (ip != null && ip.trim().length() > 0) ? ip : IpUtil.getIp();
 
+        // 默认注册的时候是不会传的, 所以就是把本季ip和9999作为地址传递过去
         // 如果adress没有传, 则用ip:9999
         // generate address
         if (address==null || address.trim().length()==0) {

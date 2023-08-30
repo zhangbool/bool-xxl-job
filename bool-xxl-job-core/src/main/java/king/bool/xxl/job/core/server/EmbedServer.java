@@ -26,7 +26,8 @@ import java.util.concurrent.*;
 /**
  * @author : 不二
  * @date : 2023/8/24-11:25
- * @desc :
+ * @desc : netty实现的http服务
+ *        #todo: 为啥要用netty呢, 直接使用springboot的接口不行吗
  **/
 @Slf4j
 public class EmbedServer {
@@ -37,6 +38,7 @@ public class EmbedServer {
 
     public void start(final String address, final int port, final String appname, final String accessToken) {
 
+        // #todo: 擦, 为啥Impl是放在这里的??? 这里是
         executorBiz = new ExecutorBizImpl();
 
         // 启动一个线程, 跑内嵌的服务器, 这个服务器是使用netty来做的
@@ -70,6 +72,15 @@ public class EmbedServer {
 
                 try {
 
+                    /*
+                    1. channel 代表了一个socket.
+                    2. ChannelPipeline 就是一个“羊肉串”，这个“羊肉串”里边的每一块羊肉就是一个 handler.
+                       handler分为两种，inbound handler,outbound handler 。顾名思义，分别处理 流入，流出。
+                    3. HttpServerCodec 是 http消息的编解码器。
+                    4. HttpObjectAggregator是Http消息聚合器，Aggregator这个单次就是“聚合，聚集”的意思。
+                       http消息在传输的过程中可能是一片片的消息片端，所以当服务器接收到的是一片片的时候，就需要HttpObjectAggregator来把它们聚合起来。
+                    5. 接收到请求之后，你要做什么，准备怎么做，就在HttpRequestHandler中实现。
+                     */
                     // start server
                     ServerBootstrap bootstrap = new ServerBootstrap();
                     bootstrap.group(bossGroup, workerGroup)
@@ -82,10 +93,14 @@ public class EmbedServer {
                                             // #todo-1: 这些都是干啥的干啥的???
                                             // beat 3N, close if idle
                                             .addLast(new IdleStateHandler(0, 0, 30 * 3, TimeUnit.SECONDS))
+                                            // http编解码
                                             .addLast(new HttpServerCodec())
                                             // merge request & reponse to FULL
+                                            // http 消息聚合器, 5*1024*1024为接收的最大contentlength
                                             .addLast(new HttpObjectAggregator(5 * 1024 * 1024))
                                             // 在这里创建内置服务器类
+                                            // 请求处理器
+                                            // .addLast(new HttpRequestHandler());
                                             .addLast((ChannelHandler) new EmbedHttpServerHandler(executorBiz, accessToken, bizThreadPool));
                                 }
                             })
@@ -94,9 +109,7 @@ public class EmbedServer {
 
                     // bind
                     ChannelFuture future = bootstrap.bind(port).sync();
-
                     log.info(">>>>>>>>>>> xxl-job remoting server start success, nettype = {}, port = {}", EmbedServer.class, port);
-
 
                     // 服务器创建好了, 就可以像admin进行注册了, 因为注册的时候需要内嵌服务器的地址
                     // 这个是自动注册, 然后同时在:
@@ -106,7 +119,6 @@ public class EmbedServer {
 
                     // wait util stop
                     future.channel().closeFuture().sync();
-
                 } catch (InterruptedException e) {
                     log.info(">>>>>>>>>>> xxl-job remoting server stop.");
                 } catch (Exception e) {
@@ -143,17 +155,15 @@ public class EmbedServer {
 
 
     // ---------------------- registry ----------------------
-
     /**
      * netty_http
      * <p>
      * Copy from : https://github.com/xuxueli/xxl-rpc
+     * 消息流入如何处理
      *
      * @author xuxueli 2015-11-24 22:25:15
      */
     public static class EmbedHttpServerHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
-
-        private static final Logger logger = LoggerFactory.getLogger(EmbedHttpServerHandler.class);
 
         private ExecutorBiz executorBiz;
         private String accessToken;
@@ -168,12 +178,29 @@ public class EmbedServer {
         @Override
         protected void channelRead0(final ChannelHandlerContext ctx, FullHttpRequest msg) throws Exception {
             // request parse
-            //final byte[] requestBytes = ByteBufUtil.getBytes(msg.content());    // byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
+            // final byte[] requestBytes = ByteBufUtil.getBytes(msg.content());
+            // byteBuf.toString(io.netty.util.CharsetUtil.UTF_8);
             String requestData = msg.content().toString(CharsetUtil.UTF_8);
             String uri = msg.uri();
             HttpMethod httpMethod = msg.method();
             boolean keepAlive = HttpUtil.isKeepAlive(msg);
             String accessTokenReq = msg.headers().get(XxlJobRemotingUtil.XXL_JOB_ACCESS_TOKEN);
+
+            // 这里演示一下netty服务器的作用
+            log.info("uri是: {}, 请求参数是: {}", uri, requestData);
+            if (uri.equals("/")) {
+                String msg01 = "<html><head><title>test</title></head><body>ivanl001 is the king of world! 你请求uri为：" + uri+"</body></html>";
+                // 创建http响应
+                FullHttpResponse response = new DefaultFullHttpResponse(
+                        HttpVersion.HTTP_1_1,
+                        HttpResponseStatus.OK,
+                        Unpooled.copiedBuffer(msg01, CharsetUtil.UTF_8));
+                // 设置头信息
+                response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/html; charset=UTF-8");
+                //response.headers().set(HttpHeaderNames.CONTENT_TYPE, "text/plain; charset=UTF-8");
+                // 将html write到客户端
+                ctx.writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
+            }
 
             // invoke
             bizThreadPool.execute(new Runnable() {
@@ -181,10 +208,8 @@ public class EmbedServer {
                 public void run() {
                     // do invoke
                     Object responseObj = process(httpMethod, uri, requestData, accessTokenReq);
-
                     // to json
                     String responseJson = GsonTool.toJson(responseObj);
-
                     // write response
                     writeResponse(ctx, keepAlive, responseJson);
                 }
@@ -192,6 +217,7 @@ public class EmbedServer {
         }
 
         private Object process(HttpMethod httpMethod, String uri, String requestData, String accessTokenReq) {
+
             // valid
             if (HttpMethod.POST != httpMethod) {
                 return new ResultModel(ResultModel.FAIL_CODE, "invalid request, HttpMethod not support.");
@@ -226,7 +252,7 @@ public class EmbedServer {
                         return new ResultModel(ResultModel.FAIL_CODE, "invalid request, uri-mapping(" + uri + ") not found.");
                 }
             } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
                 return new ResultModel(ResultModel.FAIL_CODE, "request error:" + ThrowableUtil.toString(e));
             }
         }
@@ -252,7 +278,7 @@ public class EmbedServer {
 
         @Override
         public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-            logger.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
+            log.error(">>>>>>>>>>> xxl-job provider netty_http server caught exception", cause);
             ctx.close();
         }
 
@@ -260,7 +286,7 @@ public class EmbedServer {
         public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
             if (evt instanceof IdleStateEvent) {
                 ctx.channel().close();      // beat 3N, close if idle
-                logger.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
+                log.debug(">>>>>>>>>>> xxl-job provider netty_http server close an idle channel.");
             } else {
                 super.userEventTriggered(ctx, evt);
             }

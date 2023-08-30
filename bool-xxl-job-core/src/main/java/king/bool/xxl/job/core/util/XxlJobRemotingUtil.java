@@ -113,6 +113,7 @@ public class XxlJobRemotingUtil {
             // 上面请求里已经设置里Content-Type 和 Accept-Charset都是application/json;charset=UTF-8
             // write requestBody
             if (requestObj != null) {
+                // 把请求对象直接解析成json串
                 String requestBody = GsonTool.toJson(requestObj);
 
                 DataOutputStream dataOutputStream = new DataOutputStream(connection.getOutputStream());
@@ -142,7 +143,7 @@ public class XxlJobRemotingUtil {
                 result.append(line);
             }
             String resultJson = result.toString();
-            log.info("--------> 请求结果是: <--------" + resultJson);
+            log.info("--------> 请求结果是010101: <--------" + resultJson);
 
             // parse returnT
             try {
