@@ -146,7 +146,6 @@
         <#assign glueTypeIdeMode = "powershell" />
     </#if>
 
-
 <script src="${request.contextPath}/static/plugins/codemirror/lib/codemirror.js"></script>
 <script src="${glueTypeModeSrc}"></script>
 <#if glueTypeModeSrc02?exists>

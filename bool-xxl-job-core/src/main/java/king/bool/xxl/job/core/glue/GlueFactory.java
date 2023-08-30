@@ -3,6 +3,7 @@ package king.bool.xxl.job.core.glue;
 import groovy.lang.GroovyClassLoader;
 import king.bool.xxl.job.core.glue.impl.SpringGlueFactory;
 import king.bool.xxl.job.core.handler.IJobHandler;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;
@@ -14,6 +15,7 @@ import java.util.concurrent.ConcurrentMap;
  * @date : 2023/8/24-14:32
  * @desc : glue factory, product class/object by name
  **/
+@Slf4j
 public class GlueFactory {
 
     private static GlueFactory glueFactory = new GlueFactory();
@@ -68,6 +70,8 @@ public class GlueFactory {
 
             Class<?> clazz = CLASS_CACHE.get(md5Str);
             if(clazz == null){
+                // 这个地方有问题
+                log.info("codeSource是: {}", codeSource);
                 clazz = groovyClassLoader.parseClass(codeSource);
                 CLASS_CACHE.putIfAbsent(md5Str, clazz);
             }

@@ -79,6 +79,7 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
         } else if (GlueTypeEnum.GLUE_GROOVY == glueTypeEnum) {
 
+            log.info("～～～～～～～为啥是GLUE_GROOVY???～～～～～～～");
             // valid old jobThread
             if (jobThread != null &&
                     !(jobThread.getHandler() instanceof GlueJobHandler
@@ -93,7 +94,9 @@ public class ExecutorBizImpl implements ExecutorBiz {
             // valid handler
             if (jobHandler == null) {
                 try {
+                    // 这里报错
                     IJobHandler originJobHandler = GlueFactory.getInstance().loadNewInstance(triggerParam.getGlueSource());
+                    log.info("-------------------已获取到originJobHandler-------------------");
                     jobHandler = new GlueJobHandler(originJobHandler, triggerParam.getGlueUpdatetime());
                 } catch (Exception e) {
                     log.error(e.getMessage(), e);
@@ -148,6 +151,8 @@ public class ExecutorBizImpl implements ExecutorBiz {
 
         // push data to queue
         ResultModel pushResult = jobThread.pushTriggerQueue(triggerParam);
+        log.info("push data to queue结果是: ");
+
         return pushResult;
     }
 

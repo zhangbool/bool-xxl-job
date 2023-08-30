@@ -3,6 +3,8 @@ $(function() {
 	// init code editor
 	var codeEditor;
 	function initIde(glueSource) {
+		console.log("glueSource是: " + JSON.stringify(glueSource));
+
 		if (codeEditor == null) {
             codeEditor = CodeMirror(document.getElementById("ideWindow"), {
                 mode : ideMode,
@@ -35,7 +37,7 @@ $(function() {
 
 		var glueSource = codeEditor.getValue();
 		var glueRemark = $("#glueRemark").val();
-		
+
 		if (!glueRemark) {
 			layer.open({
 				title: I18n.system_tips,
@@ -88,10 +90,10 @@ $(function() {
 		});
 
 	});
-	
+
 	// before upload
 	/*$(window).bind('beforeunload',function(){
 		return 'Glue尚未保存，确定离开Glue编辑器？';
 	});*/
-	
+
 });

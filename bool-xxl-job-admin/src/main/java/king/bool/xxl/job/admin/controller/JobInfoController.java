@@ -10,6 +10,7 @@ import king.bool.xxl.job.admin.core.scheduler.ScheduleTypeEnum;
 import king.bool.xxl.job.admin.core.thread.JobTriggerPoolHelper;
 import king.bool.xxl.job.admin.core.trigger.TriggerTypeEnum;
 import king.bool.xxl.job.admin.core.util.I18nUtil;
+import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.admin.dao.XxlJobGroupDao;
 import king.bool.xxl.job.admin.service.LoginService;
 import king.bool.xxl.job.admin.service.XxlJobService;
@@ -112,6 +113,8 @@ public class JobInfoController {
     @RequestMapping("/add")
     @ResponseBody
     public ResultModel add(XxlJobInfo jobInfo) {
+        log.info("接受到的模型是: {}", JacksonUtil.writeValueAsString(jobInfo));
+
         return xxlJobService.add(jobInfo);
     }
 

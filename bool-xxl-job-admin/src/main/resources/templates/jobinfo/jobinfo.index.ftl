@@ -249,10 +249,10 @@
                     <input type="hidden" name="glueRemark" value="GLUE代码初始化" >
                     <textarea name="glueSource" style="display:none;" ></textarea>
                     <textarea class="glueSource_java" style="display:none;" >
-package com.xxl.job.service.handler;
+package king.bool.xxl.job.core.handler;
 
-import com.xxl.job.core.context.XxlJobHelper;
-import com.xxl.job.core.handler.IJobHandler;
+import king.bool.xxl.job.core.context.XxlJobHelper;
+import king.bool.xxl.job.core.handler.IJobHandler;
 
 public class DemoGlueJobHandler extends IJobHandler {
 
