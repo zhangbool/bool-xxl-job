@@ -183,7 +183,7 @@ public class XxlJobTrigger {
                     log.info("获取到的routeAddressResult是: " + JacksonUtil.writeValueAsString(routeAddressResult));
                     // #todo: 这里我content不是string
                     // 表面上是Obj, 实际上是String类型, 直接toString应该是没啥问题的
-                    address = routeAddressResult.getContentString();
+                    address = routeAddressResult.contentString();
                     log.info("---------------------> 路由成功, 最后的结果是: {} <---------------------",  address);
                 }
             }

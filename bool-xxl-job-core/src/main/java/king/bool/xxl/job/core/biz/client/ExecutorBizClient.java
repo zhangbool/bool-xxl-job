@@ -3,6 +3,7 @@ package king.bool.xxl.job.core.biz.client;
 import king.bool.xxl.job.core.biz.ExecutorBiz;
 import king.bool.xxl.job.core.biz.model.*;
 import king.bool.xxl.job.core.util.XxlJobRemotingUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author : 不二
@@ -10,7 +11,9 @@ import king.bool.xxl.job.core.util.XxlJobRemotingUtil;
  * @desc : 执行器业务客户端, 主要负责和executor进行通信
  *         执行器实现类
  *         根据服务器地址, 发送请求到指定的服务器地址上去
+ *         用在admin中, 用来给executor进行交互
  **/
+@Slf4j
 public class ExecutorBizClient implements ExecutorBiz {
 
     // 空参构造器
@@ -35,6 +38,7 @@ public class ExecutorBizClient implements ExecutorBiz {
 
     @Override
     public ResultModel beat() {
+        log.info("～～～～～～开始发送请求进行心跳检测～～～～～～");
         // 这里没有请求对象, requestObj是空串
         return XxlJobRemotingUtil.postBody(addressUrl + "beat", accessToken, timeout, "", String.class);
     }

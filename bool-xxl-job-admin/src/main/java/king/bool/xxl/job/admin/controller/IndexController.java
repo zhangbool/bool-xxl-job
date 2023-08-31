@@ -1,6 +1,7 @@
 package king.bool.xxl.job.admin.controller;
 
 import king.bool.xxl.job.admin.controller.annotation.PermissionLimit;
+import king.bool.xxl.job.admin.core.util.JacksonUtil;
 import king.bool.xxl.job.admin.service.LoginService;
 import king.bool.xxl.job.admin.service.XxlJobService;
 import king.bool.xxl.job.core.biz.model.ResultModel;
@@ -55,6 +56,8 @@ public class IndexController {
 //    public ResultModel chartInfo(String startDate, String endDate) {
         log.info("startDate是: " + startDate + ", endDate: " + endDate);
          ResultModel chartInfo = xxlJobService.chartInfo(startDate, endDate);
+        log.info("查询的图标信息是: {}", JacksonUtil.writeValueAsString(chartInfo));
+
          return chartInfo;
     }
 

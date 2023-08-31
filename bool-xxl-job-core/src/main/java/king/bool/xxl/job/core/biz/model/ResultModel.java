@@ -38,8 +38,8 @@ public class ResultModel {
         return this;
     }
 
-    public static final ResultModel SUCCESS = new ResultModel(SUCCESS_CODE, null);
-    public static final ResultModel FAIL = new ResultModel(FAIL_CODE, null);
+    public static final ResultModel SUCCESS = new ResultModel(SUCCESS_CODE, "ok");
+    public static final ResultModel FAIL = new ResultModel(FAIL_CODE, "error");
 
     public ResultModel() {
     }
@@ -77,7 +77,7 @@ public class ResultModel {
         return content;
     }
 
-    public String getContentString() {
+    public String contentString() {
         return (String) (content == null ? "" : content);
     }
 }

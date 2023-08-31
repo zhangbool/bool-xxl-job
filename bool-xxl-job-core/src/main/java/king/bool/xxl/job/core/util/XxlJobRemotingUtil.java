@@ -62,6 +62,8 @@ public class XxlJobRemotingUtil {
 
     /**
      * post
+     * #todo: 这里就是一个http的post方法封装而已...后面把这个给重写一下
+     *
      * 网络post请求, 直接返回对应模型的数据
      *
      * @param url

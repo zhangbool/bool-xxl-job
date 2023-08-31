@@ -235,6 +235,7 @@ public class EmbedServer {
             try {
                 switch (uri) {
                     case "/beat":
+                        log.info("------executor检测到admin发来的心跳------");
                         return executorBiz.beat();
                     case "/idleBeat":
                         IdleBeatParam idleBeatParam = GsonTool.fromJson(requestData, IdleBeatParam.class);

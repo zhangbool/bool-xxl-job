@@ -36,6 +36,10 @@ public class JobApiController {
 
     /**
      * api
+     * 这里不就和executor的内置服务器差不多吗
+     * 内置服务器直接根据请求路径判断
+     * 这里根据请求url判断
+     * 然后根据不同的请求做出不同的逻辑
      *
      * @param uri
      * @param data
@@ -71,7 +75,6 @@ public class JobApiController {
         } else if ("registry".equals(uri)) {
             RegistryParam registryParam = GsonTool.fromJson(data, RegistryParam.class);
             log.info("registry模型转换结果是: {}", JacksonUtil.writeValueAsString(registryParam));
-
             return adminBiz.registry(registryParam);
             // return ResultModel.SUCCESS.setOKResult("ivanl001 is the king of world!");
         } else if ("registryRemove".equals(uri)) {
